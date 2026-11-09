@@ -1,0 +1,12 @@
+{
+ "capturedAt": "Mon, 09 Nov 2026 23:16:52 GMT",
+ "chains": [
+  {
+   "chain_id": "8453",
+   "chain": "base",
+   "policy_registry_address": "0x8453000000000000000000000000000000000002",
+   "token_supply_manager_address": "0xD1Ca4dAcdf3231011D175351f1f02D15C7c5664C",
+   "token_factory_address": "0x4bA3E29E254F25E94E61C4c9d67b37027331534D"
+  }
+ ]
+}
