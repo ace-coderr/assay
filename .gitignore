@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.netlify/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+coverage/
+cache/
+out/
+broadcast/
+.claude/
+CLAUDE.md
