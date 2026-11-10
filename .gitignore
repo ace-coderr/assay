@@ -12,3 +12,5 @@ out/
 broadcast/
 .claude/
 CLAUDE.md
+prev/
+out-*/

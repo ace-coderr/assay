@@ -22,8 +22,8 @@ describe("audit: nothing can trade or sign", () => {
   // Product code only. Contract scripts (testnet attestation) are checked separately below.
   const product = [
     ...walk(path.join(root, "apps/web/src"), [".ts", ".tsx"]),
-    ...walk(path.join(root, "apps/api/lib"), [".ts"]),
-    ...walk(path.join(root, "apps/api/netlify"), [".ts"]),
+    ...walk(path.join(root, "apps/pipeline/lib"), [".ts"]),
+    ...walk(path.join(root, "apps/pipeline/src"), [".ts"]),
     ...walk(path.join(root, "packages/core/src"), [".ts"]),
     ...walk(path.join(root, "packages/mcp/src"), [".ts"]),
   ];

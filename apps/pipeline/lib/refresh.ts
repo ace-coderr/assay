@@ -8,13 +8,18 @@ import {
   makeClient,
   readPools,
   toTokenRef,
+  type ActionEvent,
+  type HistoryPoint,
+  type LatestDoc,
   type PoolRead,
   type Reading,
+  type RunRecord,
+  type StateEvent,
 } from "@assay/core";
-import type { ActionEvent, HistoryPoint, LatestDoc, RunRecord, StateEvent, Store, WebhookRec } from "./store.js";
-import { deliverWebhooks } from "./webhooks.js";
+import type { Store } from "./store.js";
 
-const HISTORY_CAP = 2016; // 7 days at 5 minute cadence
+export const CORP_ACTION_API = "https://api.coinbase.com/v1/tokenized-stocks/corporate-actions/";
+const HISTORY_CAP = 1008; // 7 days at a 10 minute cadence
 const EVENT_CAP = 300;
 const ACTION_CAP = 500;
 
@@ -22,7 +27,7 @@ const TOPIC_ANNOUNCEMENT = "0xccebf8218a62875909564adef86a6f4df81503cb617221e793
 const TOPIC_UI_MULT = "0x2205df4534432b2f60654a3fdb48737ffdaf3e9edb1a498bd985bc026b15b055";
 const LOG_CHUNK = 50_000n; // public RPC limit
 const LOG_ADDR_BATCH = 10; // public RPC limit
-const LOG_REQUESTS_PER_RUN = 4;
+const LOG_REQUESTS_PER_RUN = 12; // no 30 s function limit in Actions, so catch up faster than before
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const INITIAL_LOOKBACK = 600_000n; // about 14 days on Base (2s blocks)
 
@@ -38,7 +43,7 @@ export interface RefreshDeps {
 
 /**
  * Runs one refresh and records its health (duration, per-step timing, failures) so problems
- * are visible on /api/status instead of only in platform logs. Failures are recorded, logged
+ * are visible in status.json instead of only in the Actions log. Failures are recorded, logged
  * and re-thrown: a failed run is a real error and is not disguised as success.
  */
 export async function runRefresh(deps: RefreshDeps): Promise<LatestDoc> {
@@ -176,12 +181,31 @@ async function refreshOnce({ store, client = makeClient(), fetchFn = fetch, now 
   await store.set("latest", doc);
   lap("actionsScan+save");
 
-  // 6. Webhooks (best effort; failures never block a reading).
-  if (newEvents.length) {
-    const hooks = (await store.get<WebhookRec[]>("webhooks")) ?? [];
-    if (hooks.length) await store.set("webhooks", await deliverWebhooks(hooks, newEvents, fetchFn));
-  }
+  // 6. Issuer records for corporate actions. The Coinbase API sends no CORS headers, so the browser cannot
+  // fetch them; the pipeline does, and publishes them with the actions.
+  await fetchActionDetails(store, fetchFn, at).catch((e) => console.error("action details failed", msg(e)));
+  lap("actionDetails");
   return doc;
+}
+
+export type ActionDetail = { status: "ok"; record: unknown; fetchedAt: string } | { status: "unavailable"; reason: string; fetchedAt: string };
+
+/** Fetch the issuer record for each corporate-action id we know of. Successes are kept; failures are retried next run. */
+export async function fetchActionDetails(store: Store, fetchFn: typeof fetch, at: string, maxPerRun = 15): Promise<void> {
+  const actions = (await store.get<ActionEvent[]>("actions")) ?? [];
+  const details = (await store.get<Record<string, ActionDetail>>("actionDetails")) ?? {};
+  const todo = [...new Set(actions.map((a) => a.actionId).filter((x): x is string => !!x))].filter((id) => details[id]?.status !== "ok").slice(0, maxPerRun);
+  for (const id of todo) {
+    try {
+      const res = await fetchFn(CORP_ACTION_API + id, { signal: AbortSignal.timeout(10_000) });
+      details[id] = res.ok
+        ? { status: "ok", record: await res.json(), fetchedAt: at }
+        : { status: "unavailable", reason: res.status === 404 ? "the Tokenized Stocks API has no record for this action id" : `the Tokenized Stocks API answered HTTP ${res.status}`, fetchedAt: at };
+    } catch (e) {
+      details[id] = { status: "unavailable", reason: `issuer record source did not respond: ${msg(e)}`, fetchedAt: at };
+    }
+  }
+  if (todo.length) await store.set("actionDetails", details);
 }
 
 function unavailable(symbol: string, address: `0x${string}`, multiplier: number, readAt: string, why: string): Reading {

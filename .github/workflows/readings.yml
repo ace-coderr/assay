@@ -1,0 +1,53 @@
+name: readings
+
+# Produces the public JSON the website and MCP server read, and force-pushes it as ONE commit to the orphan
+# `data` branch (no history, so the repository does not grow). Uses only public APIs: no secrets are needed.
+# GitHub cron is best-effort and can run late; every reading carries its real timestamp so the UI shows true age.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+# Runs never overlap: a late run queues behind the current one instead of racing it.
+concurrency:
+  group: readings
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile --filter "@assay/pipeline..."
+
+      # Read the previous data first so history, cursors and multiplier baselines roll forward.
+      - name: Load previous data
+        run: git clone --depth 1 --branch data "https://github.com/${{ github.repository }}.git" prev || mkdir prev
+
+      - name: Run pipeline
+        env:
+          PREV_DIR: prev
+          OUT_DIR: out
+        run: pnpm --filter @assay/pipeline run run
+
+      - name: Publish to the data branch (single orphan commit, force-pushed)
+        run: |
+          cd out
+          git init -q -b data
+          git config user.name "ace"
+          git config user.email "207328107+ace-coderr@users.noreply.github.com"
+          git add -A
+          git commit -q -m "data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
