@@ -73,9 +73,12 @@ the end of the announcement `uri`. To be wired in step 4.
 ## 4. DEX pools on Base
 
 Discovered with factory `getPool` calls (token vs USDC `0x8335…2913` and WETH).
-Venues found: **Uniswap V3** (`0x33128a8f…FDfD`) and **Aerodrome V2** volatile
-(`0x420DD381…40Da`). None found on Aerodrome CL for these 12 tokens. No pools found for
-CRCLc or INTCc in these venues. Uniswap V4 was not searched.
+The first recon found only **Uniswap V3** (`0x33128a8f…FDfD`) and **Aerodrome V2** volatile
+(`0x420DD381…40Da`) pools, and wrongly concluded there were none on Aerodrome CL and none for CRCLc or INTCc: the
+single Slipstream factory it queried (`0x5e7BB104…06809A`) holds no stock-token pools. **That was incomplete.** The
+deep pools are on two other Aerodrome concentrated-liquidity factories (`0x9CB22058…D07a76`, `0xf8f2eB49…61Ef`),
+and every one of the 12 reference tokens has a USDC pool there. See [coverage.md](coverage.md) for the full search
+(10 factories, 8 quote assets, Uniswap v4 events, and a transfer scan) and the correction.
 
 Price read: `slot0().sqrtPriceX96`, `liquidity()`, USDC balance of the pool.
 Both `mainnet.base.org` and `base-rpc.publicnode.com` returned identical values on

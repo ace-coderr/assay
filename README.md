@@ -26,6 +26,10 @@ it with the reference, and assigns a state:
 Tokens with no reference value, or no pool that passes the depth guard, are shown as
 **unavailable**. Assay never substitutes a guessed number.
 
+Pools are read from Uniswap v3, Aerodrome v2 and Aerodrome Slipstream. Coverage per token and how pools were
+searched: [`docs/coverage.md`](docs/coverage.md). What was cross-checked and what was not:
+[`docs/verification.md`](docs/verification.md).
+
 Method, thresholds and the guards against thin-pool manipulation are on the app's
 "Method and verify" page. Data sources and what each endpoint really returns are in
 [`docs/data-sources.md`](docs/data-sources.md).
