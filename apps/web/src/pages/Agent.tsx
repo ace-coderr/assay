@@ -48,8 +48,16 @@ export default function Agent() {
 
       <div className="card">
         <b>Server URL</b>
-        <p className="muted" style={{ fontSize: 14 }}>Streamable HTTP, stateless, no API key. Rate limited to 60 requests per minute per client.</p>
+        <p className="muted" style={{ fontSize: 14 }}>Streamable HTTP, stateless, no API key.</p>
         <CopyBlock text={url} />
+        <h3 style={{ fontSize: 15, margin: "16px 0 6px" }}>Rate limits</h3>
+        <ul className="muted" style={{ fontSize: 14, margin: 0, paddingLeft: 18 }}>
+          <li><code>/mcp</code>: 60 requests per minute per IP address.</li>
+          <li><code>/api/*</code>: 120 requests per minute per IP address.</li>
+          <li>Enforced by Netlify&rsquo;s rate-limit rules at the edge, so the count is shared across all instances. Going over returns <b>HTTP 429</b>; wait a minute and retry.</li>
+          <li>Readings refresh every 5 minutes, so polling faster than that returns the same data. Responses are cached for 10 to 30 seconds.</li>
+          <li>Webhook registration is limited to 5 per minute per IP.</li>
+        </ul>
       </div>
 
       <div className="grid-2" style={{ marginTop: 16 }}>
