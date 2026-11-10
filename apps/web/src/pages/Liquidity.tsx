@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { VENUE_LABEL, type Venue } from "@assay/core";
 import { Disclaimer, ErrorBox } from "../components/bits";
 import { explorer, fmtPrice, fmtUsd, useApi, type Board } from "../lib/api";
 
@@ -94,7 +95,7 @@ export default function Liquidity() {
               )}
             </div>
             <dl className="kv" style={{ alignContent: "start" }}>
-              <dt>Pool</dt><dd><a href={explorer(res.pool!.address)} target="_blank" rel="noreferrer">{res.pool!.address.slice(0, 10)}…</a> ({res.pool!.venue})</dd>
+              <dt>Pool</dt><dd><a href={explorer(res.pool!.address)} target="_blank" rel="noreferrer">{res.pool!.address.slice(0, 10)}…</a> ({VENUE_LABEL[res.pool!.venue as Venue] ?? res.pool!.venue})</dd>
               <dt>Depth</dt><dd>{fmtUsd(res.pool!.usdcDepth)} USDC</dd>
               <dt>Spot</dt><dd>${fmtPrice(res.pool!.spotPrice, 4)}</dd>
               <dt>Reading</dt><dd>{res.readAt}</dd>
@@ -102,7 +103,7 @@ export default function Liquidity() {
           </div>
           {q.lowerBound && (
             <p className="banner" style={{ marginTop: 14 }}>
-              This size is larger than the liquidity at the pool's current price range. The true cost is higher than shown, because the trade would move through further price ranges. Assay does not simulate those.
+              This size needs more liquidity than Assay read around the current price (about 3% each side). The true cost is higher than shown, and Assay does not guess how much higher.
             </p>
           )}
           <p className="notice">{res.method}</p>

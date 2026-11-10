@@ -21,8 +21,9 @@ export function Strip({ deviationBps, bandBps = 100, rangeBps = 300, state, labe
   useEffect(() => {
     if (deviationBps == null) return;
     setPos(-rangeBps);
-    const id = requestAnimationFrame(() => requestAnimationFrame(() => setPos(deviationBps)));
-    return () => cancelAnimationFrame(id);
+    // A timer, not requestAnimationFrame: rAF is suspended in background tabs, which would leave the needle at its start.
+    const id = setTimeout(() => setPos(deviationBps), 60);
+    return () => clearTimeout(id);
   }, [deviationBps, rangeBps]);
 
   const unavailable = deviationBps == null;

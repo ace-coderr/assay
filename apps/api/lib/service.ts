@@ -84,11 +84,11 @@ export function probe(doc: LatestDoc | null, symbol: string, usd: number, side: 
     quote,
     label: quote.lowerBound ? "AT_LEAST" : "ESTIMATE",
     explanation: quote.lowerBound
-      ? "At least: this size is larger than the liquidity at the pool's current price range, so the trade would move through further price ranges and the true cost is higher than shown. Assay does not simulate those ranges."
-      : "Estimate within the pool's current price range, fee included.",
+      ? "At least: this size needs more liquidity than Assay read around the current price (about 3% each side), so the true cost is higher than shown."
+      : "Estimate from a tick-by-tick simulation over the liquidity read on-chain, fee included.",
     method:
       isConcentrated(pool.venue)
-        ? "Constant-liquidity estimate within the pool's current price range, fee included."
+        ? "Simulated tick by tick over the initialized ticks read on-chain (about 3% each side of the price), fee included. Cross-checked against Uniswap's own quoter for Uniswap v3."
         : "Constant-product (x*y=k) estimate with a 0.30% fee.",
     rejectedPools: reading.poolsRejected,
     disclaimer: DISCLAIMER,

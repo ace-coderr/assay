@@ -72,11 +72,11 @@ export default function Attestations() {
                 <tbody>
                   {rows.map((r) => (
                     <tr key={r.tx}>
-                      <td className="mono">{r.token.slice(0, 8)}…</td>
+                      <td className="mono"><a href={`https://basescan.org/address/${r.token}`} target="_blank" rel="noreferrer">{r.token.slice(0, 8)}…{r.token.slice(-4)}</a></td>
                       <td><span className={`badge ${r.state.toLowerCase()}`}>{r.state.toUpperCase()}</span></td>
                       <td className="num">${r.price.toFixed(2)}</td><td className="num">${r.ref.toFixed(2)}</td>
                       <td className="mono">{new Date(r.ts * 1000).toISOString().replace("T", " ").slice(0, 19)}</td>
-                      <td><a href={`https://sepolia.basescan.org/tx/${r.tx}`} target="_blank" rel="noreferrer">view</a></td>
+                      <td><a className="mono" href={`https://sepolia.basescan.org/tx/${r.tx}`} target="_blank" rel="noreferrer" aria-label={`View transaction ${r.tx} on Base Sepolia explorer`}>{r.tx.slice(0, 10)}…{r.tx.slice(-6)}</a></td>
                     </tr>
                   ))}
                 </tbody>

@@ -47,6 +47,7 @@ export default function Board() {
                 <th className="num">Deviation</th>
                 <th>Scale</th>
                 <th className="num">Pool depth</th>
+                <th className="num" title="USD needed to push the price 1%">Cost to move 1%</th>
                 <th className="num">Ref age</th>
               </tr>
             </thead>
@@ -65,11 +66,12 @@ export default function Board() {
                       <td className={`num ${r.state === "Drifting" || r.state === "Broken" ? "coral" : ""}`}>{fmtBps(r.deviationBps)}</td>
                       <td className="board-strip"><Strip deviationBps={r.deviationBps} state={r.state} label={r.symbol} /></td>
                       <td className="num">{fmtUsd(r.poolUsed?.usdcDepth)}</td>
+                      <td className="num">{r.poolUsed?.costToMove100bpsUsd != null ? `${r.poolUsed.costRangeLimited ? "≥ " : ""}${fmtUsd(r.poolUsed.costToMove100bpsUsd)}` : "n/a"}</td>
                       <td className="num">{fmtAge(r.referenceAgeSec)}</td>
                     </>
                   ) : (
-                    <td colSpan={6} className="muted" style={{ fontSize: 13 }}>
-                      Unavailable: {r.unavailableReason}
+                    <td colSpan={7} className="muted" style={{ fontSize: 13 }}>
+                      {r.unavailableCode === "no-pool" ? "" : "Unavailable: "}{r.unavailableReason}
                       {r.poolsRejected.length > 0 && <span className="dim"> · {r.poolsRejected.length} pool(s) rejected by the depth guard</span>}
                     </td>
                   )}
