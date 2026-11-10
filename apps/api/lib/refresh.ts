@@ -1,5 +1,7 @@
-import { decodeAbiParameters, type PublicClient } from "viem";
+import { createPublicClient, decodeAbiParameters, http, type PublicClient } from "viem";
+import { base } from "viem/chains";
 import {
+  DEFAULT_RPCS,
   buildReading,
   discoverPools,
   fetchTokens,
@@ -20,7 +22,8 @@ const TOPIC_ANNOUNCEMENT = "0xccebf8218a62875909564adef86a6f4df81503cb617221e793
 const TOPIC_UI_MULT = "0x2205df4534432b2f60654a3fdb48737ffdaf3e9edb1a498bd985bc026b15b055";
 const LOG_CHUNK = 50_000n; // public RPC limit
 const LOG_ADDR_BATCH = 10; // public RPC limit
-const LOG_REQUESTS_PER_RUN = 6;
+const LOG_REQUESTS_PER_RUN = 4;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const INITIAL_LOOKBACK = 600_000n; // about 14 days on Base (2s blocks)
 
 const msg = (e: unknown) => (e instanceof Error ? e.message : String(e)).slice(0, 300);
@@ -125,7 +128,9 @@ export async function runRefresh({ store, client = makeClient(), fetchFn = fetch
 
   // 5. Corporate-action events from chain logs (incremental, rate-limited).
   try {
-    actions.push(...(await scanActions(client, store, refTokens.concat(tokens.filter((t) => t.multiplier !== 1 && t.navPrice == null)), at)));
+    const scan = await scanActions(client, store, refTokens.concat(tokens.filter((t) => t.multiplier !== 1 && t.navPrice == null)), at);
+    actions.push(...scan.events);
+    await store.set("actions-error", scan.error ? { at, error: scan.error } : null);
   } catch (e) {
     await store.set("actions-error", { at, error: msg(e) });
   }
@@ -164,32 +169,62 @@ async function scanActions(
   store: Store,
   tokens: { address: `0x${string}`; symbol: string }[],
   detectedAt: string,
-): Promise<ActionEvent[]> {
+): Promise<{ events: ActionEvent[]; error?: string }> {
   const uniq = [...new Map(tokens.map((t) => [t.address.toLowerCase(), t])).values()];
-  if (!uniq.length) return [];
+  if (!uniq.length) return { events: [] };
   const head = await client.getBlockNumber();
   const cur = await store.get<{ block: string }>("actions-cursor");
   let from = cur ? BigInt(cur.block) + 1n : head - INITIAL_LOOKBACK;
   const out: ActionEvent[] = [];
   const bySym = new Map(uniq.map((t) => [t.address.toLowerCase(), t.symbol]));
   let requests = 0;
+  const startFrom = from;
+  let error: string | undefined;
   let scannedTo = from - 1n;
   while (from <= head && requests < LOG_REQUESTS_PER_RUN) {
     const to = from + LOG_CHUNK - 1n > head ? head : from + LOG_CHUNK - 1n;
-    for (let i = 0; i < uniq.length; i += LOG_ADDR_BATCH) {
-      const batch = uniq.slice(i, i + LOG_ADDR_BATCH).map((t) => t.address);
-      const logs = (await client.request({
-        method: "eth_getLogs",
-        params: [{ address: batch, topics: [[TOPIC_ANNOUNCEMENT, TOPIC_UI_MULT]], fromBlock: `0x${from.toString(16)}`, toBlock: `0x${to.toString(16)}` }],
-      } as never)) as { address: string; topics: string[]; data: `0x${string}`; blockNumber: string; transactionHash: string }[];
-      requests++;
-      for (const l of logs) out.push(decodeLog(l, bySym.get(l.address.toLowerCase()) ?? "?", detectedAt));
+    const chunk: ActionEvent[] = [];
+    try {
+      for (let i = 0; i < uniq.length; i += LOG_ADDR_BATCH) {
+        const batch = uniq.slice(i, i + LOG_ADDR_BATCH).map((t) => t.address);
+        const logs = await getLogsResilient({
+          address: batch,
+          topics: [[TOPIC_ANNOUNCEMENT, TOPIC_UI_MULT]],
+          fromBlock: `0x${from.toString(16)}`,
+          toBlock: `0x${to.toString(16)}`,
+        });
+        requests++;
+        await sleep(300);
+        for (const l of logs) chunk.push(decodeLog(l, bySym.get(l.address.toLowerCase()) ?? "?", detectedAt));
+      }
+    } catch (e) {
+      // Keep the progress made so far; the failed chunk is retried on the next run.
+      error = msg(e);
+      break;
     }
+    out.push(...chunk);
     scannedTo = to;
     from = to + 1n;
   }
-  await store.set("actions-cursor", { block: scannedTo.toString(), head: head.toString() });
-  return out;
+  if (scannedTo >= startFrom) await store.set("actions-cursor", { block: scannedTo.toString(), head: head.toString() });
+  return { events: out, error };
+}
+
+type RawLog = { address: string; topics: string[]; data: `0x${string}`; blockNumber: string; transactionHash: string };
+
+/** eth_getLogs against each public RPC in turn, reporting every endpoint error (viem fallback keeps only the last). */
+async function getLogsResilient(filter: Record<string, unknown>): Promise<RawLog[]> {
+  const errors: string[] = [];
+  for (const url of DEFAULT_RPCS) {
+    const c = createPublicClient({ chain: base, transport: http(url, { timeout: 12_000, retryCount: 0 }) });
+    try {
+      return (await c.request({ method: "eth_getLogs", params: [filter] } as never)) as RawLog[];
+    } catch (e) {
+      errors.push(`${new URL(url).host}: ${msg(e).slice(0, 110)}`);
+      await sleep(400);
+    }
+  }
+  throw new Error(errors.join(" | "));
 }
 
 export function decodeLog(
