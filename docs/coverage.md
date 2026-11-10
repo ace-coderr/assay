@@ -96,8 +96,8 @@ make that so.
   apart from a cbBTC-quoted MSTRc Slipstream pool.
 - The 326 tokens in the API that publish no reference value.
 
-## Deployment note
+## Where this runs
 
-The fixes in this document are committed and pushed, and were run end to end locally with `netlify dev` against the
-real API and chain. At the time of writing they are **not on the live site**, because Netlify has skipped builds
-("account credit usage exceeded"). The live site still runs the earlier engine. See the final report.
+The engine described here runs in the GitHub Actions `readings` workflow and its output is published to the `data`
+branch (see [hosting.md](hosting.md)); the website at https://ace-coderr.github.io/assay/ reads it. The figures in the
+table above came from a local run; the live Board shows the current numbers.

@@ -3,12 +3,12 @@ import { publicClient, wallet, chain } from "./common.js";
 
 const art = JSON.parse(fs.readFileSync(new URL("../out/AssayAttestations.json", import.meta.url), "utf8"));
 const dep = JSON.parse(fs.readFileSync(new URL("../deployments/base-sepolia.json", import.meta.url), "utf8"));
-const API = process.env.ASSAY_API ?? "https://assay-onbase.netlify.app/api";
+const DATA = process.env.ASSAY_DATA_URL ?? "https://raw.githubusercontent.com/ace-coderr/assay/data";
 const STATE = { Fresh: 0, Stale: 1, Drifting: 2, Broken: 3 } as const;
 const { client } = wallet();
 if ((await publicClient.getChainId()) !== chain.id) throw new Error("RPC is not Base Sepolia (84532). Refusing.");
 
-const board = await (await fetch(`${API}/board`)).json();
+const board = await (await fetch(`${DATA}/board.json`)).json();
 const only = process.argv[2]?.toLowerCase();
 for (const r of board.readings) {
   if (r.status !== "ok") { console.log(r.symbol, "skipped:", r.unavailableReason); continue; }

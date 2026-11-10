@@ -1,7 +1,7 @@
 // Prints the per-token coverage table (markdown) from a running API and the coverage fixtures.
 import fs from "node:fs";
-const base = process.argv[2] ?? "http://127.0.0.1:8899";
-const board = await (await fetch(`${base}/api/board`)).json();
+const base = process.argv[2] ?? "https://raw.githubusercontent.com/ace-coderr/assay/data";
+const board = await (await fetch(`${base}/board.json`)).json();
 const ds = JSON.parse(fs.readFileSync("fixtures/coverage-dexscreener.json", "utf8")).tokens;
 const v4 = JSON.parse(fs.readFileSync("fixtures/coverage-v4.json", "utf8")).pools;
 const USDC = "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913";

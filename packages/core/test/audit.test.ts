@@ -49,6 +49,55 @@ describe("audit: nothing can trade or sign", () => {
   });
 });
 
+describe("audit: static GitHub hosting", () => {
+  const live = [
+    ...walk(path.join(root, "apps/web/src"), [".ts", ".tsx"]),
+    ...walk(path.join(root, "apps/pipeline"), [".ts"]),
+    ...walk(path.join(root, "packages/mcp/src"), [".ts"]),
+    ...walk(path.join(root, "packages/core/src"), [".ts"]),
+    path.join(root, "README.md"),
+    path.join(root, "apps/web/index.html"),
+    ...walk(path.join(root, ".github"), [".yml"]),
+  ];
+  it("nothing in the running code or README depends on, or points to, Netlify", () => {
+    const hits = live.filter((f) => /netlify/i.test(read(f))).map(rel);
+    expect(hits).toEqual([]);
+    expect(fs.existsSync(path.join(root, "netlify.toml"))).toBe(false);
+  });
+  it("the website never calls a server API: no /api, /mcp or webhook calls", () => {
+    const hits = walk(path.join(root, "apps/web/src"), [".ts", ".tsx"]).filter((f) => /fetch\(\s*[`"']\/(api|mcp)|\/api\/webhooks/.test(read(f))).map(rel);
+    expect(hits).toEqual([]);
+  });
+  it("the website only connects to hosts its Content-Security-Policy allows", () => {
+    const html = read(path.join(root, "apps/web/index.html"));
+    const csp = html.match(/Content-Security-Policy"\s+content="[^"]*?connect-src([^;"]*)/)![1]!;
+    const allowed = [...csp.matchAll(/https:\/\/[a-z0-9.-]+/g)].map((m) => m[0]);
+    const used = new Set<string>();
+    for (const f of walk(path.join(root, "apps/web/src"), [".ts", ".tsx"])) {
+      for (const m of read(f).matchAll(/["'`](https:\/\/[a-z0-9.-]+)/g)) {
+        // links the user clicks are not connections; only look at hosts that appear next to fetch/http( calls
+        const near = read(f).slice(Math.max(0, m.index! - 80), m.index!);
+        if (/fetch\(|http\(|DATA_URL[^\n]*=|baseURL/.test(near) || /raw\.githubusercontent|api\.github|publicnode|mainnet\.base\.org/.test(m[1]!)) used.add(m[1]!);
+      }
+    }
+    for (const h of used) {
+      if (/basescan|github\.com$|x\.com|coinbase|base\.org\/assets/.test(h)) continue; // navigation links
+      expect(allowed, h).toContain(h);
+    }
+  });
+  it("workflows use no secrets and never mention a private key", () => {
+    for (const f of walk(path.join(root, ".github"), [".yml"])) {
+      const src = read(f);
+      expect(src, rel(f)).not.toMatch(/secrets\.|PRIVATE_KEY|SEPOLIA|BUILDER_CODE|BEGIN [A-Z ]*PRIVATE/);
+      expect(src, rel(f)).not.toMatch(/netlify|vercel|railway|cloudflare/i);
+    }
+  });
+  it("the pipeline publishes only public data (no env dump, no keys)", () => {
+    const src = walk(path.join(root, "apps/pipeline"), [".ts"]).map(read).join("\n");
+    expect(src).not.toMatch(/process\.env\.(?!PREV_DIR|OUT_DIR|ASSAY_DATA_URL|BASE_RPC_URL)[A-Z_]+/);
+  });
+});
+
 describe("audit: disclaimers", () => {
   it("every page and the footer carry the disclaimer", () => {
     for (const f of walk(path.join(root, "apps/web/src/pages"), [".tsx"])) {

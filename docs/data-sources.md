@@ -2,7 +2,7 @@
 
 Everything here was observed in real responses on 2026-11-09 (Base mainnet,
 block ~55,381,000). Nothing below is assumed. The Coinbase API was fetched from
-Netlify's servers through the deployed `probe` function, because the dev
+a temporary serverless probe (since retired; the Actions pipeline now does this), because the dev
 machine's network cannot reach `api.coinbase.com`. Onchain reads were made from
 the dev machine over public RPCs.
 
@@ -12,7 +12,7 @@ Fixtures captured from these calls live in `/fixtures`.
 
 Base URL `https://api.coinbase.com/v1/tokenized-stocks`. **No API key.** No rate
 limit headers were returned (only `content-type`, `date`, and
-`cache-control: public, max-age=300` on `/metadata`). Latency from Netlify:
+`cache-control: public, max-age=300` on `/metadata`). Latency from the serverless probe:
 36 to 200 ms. Limits are undocumented, so Assay caches and reads on a schedule.
 
 | Endpoint | Observed response |

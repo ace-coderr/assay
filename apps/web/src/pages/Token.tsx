@@ -75,7 +75,7 @@ export default function Token() {
         <>
           {r.status !== "ok" ? (
             <div className="banner" role="status">
-              Unavailable: {r.unavailableReason}. Assay shows no price for this token rather than guessing.
+              {r.unavailableCode === "no-pool" ? "" : "Unavailable: "}{(r.unavailableReason ?? "no usable reading").replace(/\.$/, "")}. Assay shows no price for this token rather than guessing.
               {r.poolsRejected.length > 0 && <ul>{r.poolsRejected.map((p) => <li key={p.pool}><a href={explorer(p.pool)} target="_blank" rel="noreferrer">{short(p.pool)}</a>: {p.why}</li>)}</ul>}
             </div>
           ) : (
