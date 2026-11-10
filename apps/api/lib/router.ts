@@ -49,7 +49,9 @@ export async function handle(req: Request, store: Store, fetchFn: typeof fetch =
             block: doc?.block ?? null,
             network: "Base mainnet (8453)",
             sources: doc?.sources ?? null,
+            refresh: await store.get("run"),
             tracked: doc?.readings.length ?? 0,
+            assayable: doc?.readings.filter((r) => r.status === "ok").length ?? 0,
             untracked: doc?.untracked ?? null,
             totalTokens: doc?.totalTokens ?? null,
             thresholds: thresholdsDoc(),
@@ -81,9 +83,17 @@ export async function handle(req: Request, store: Store, fetchFn: typeof fetch =
         case "actions": {
           if (seg[1]) {
             if (!UUID_RE.test(seg[1])) return err(400, "bad corporate action id");
-            const up = await fetchFn(CORP_ACTION_API + seg[1], { signal: AbortSignal.timeout(10_000) });
-            const body = await up.text();
-            return new Response(body, { status: up.status, headers: { "content-type": "application/json", "access-control-allow-origin": "*", "cache-control": "public, max-age=60" } });
+            // The issuer record is a third-party lookup: relay it when it exists, otherwise explain, never pass an upstream error through.
+            let up: Response;
+            try {
+              up = await fetchFn(CORP_ACTION_API + seg[1], { signal: AbortSignal.timeout(10_000) });
+            } catch (e) {
+              return json({ status: "unavailable", reason: "issuer record source did not respond", detail: e instanceof Error ? e.message.slice(0, 120) : "network error" }, 200, 30);
+            }
+            if (!up.ok) {
+              return json({ status: "unavailable", reason: up.status === 404 ? "the Tokenized Stocks API has no record for this action id" : `the Tokenized Stocks API answered HTTP ${up.status}`, upstreamStatus: up.status }, 200, 30);
+            }
+            return new Response(await up.text(), { headers: { "content-type": "application/json", "access-control-allow-origin": "*", "cache-control": "public, max-age=60" } });
           }
           const sym = url.searchParams.get("symbol") ?? undefined;
           if (sym && !SYMBOL_RE.test(sym)) return err(400, "bad symbol");
@@ -99,7 +109,8 @@ export async function handle(req: Request, store: Store, fetchFn: typeof fetch =
           const sym = url.searchParams.get("symbol") ?? "";
           if (!SYMBOL_RE.test(sym)) return err(400, "bad symbol");
           const r = probe(doc, sym, usd, side);
-          return json(r, r.ok ? 200 : 404, 10);
+          // "unavailable" is an explained answer to a valid request (HTTP 200); only an unknown symbol is a 404.
+          return json(r, r.ok || r.status === "unavailable" ? 200 : 404, 10);
         }
         case "check": {
           const usdRaw = url.searchParams.get("usd");
@@ -152,6 +163,7 @@ export async function handle(req: Request, store: Store, fetchFn: typeof fetch =
     }
     return err(404, "not found");
   } catch (e) {
+    console.error("api error", req.method, url.pathname, e instanceof Error ? e.message : e);
     return json({ error: "internal error", detail: e instanceof Error ? e.message.slice(0, 200) : "unknown" }, 500);
   }
 }

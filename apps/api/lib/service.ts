@@ -7,7 +7,25 @@ export const MAX_SIZE_USD = 1_000_000;
 
 export function findReading(doc: LatestDoc | null, symbol: string): Reading | undefined {
   const s = symbol.trim().toLowerCase();
-  return doc?.readings.find((r) => r.symbol.toLowerCase() === s || r.symbol.toLowerCase() === s + "c");
+  const hit = doc?.readings.find((r) => r.symbol.toLowerCase() === s || r.symbol.toLowerCase() === s + "c");
+  if (hit) return hit;
+  // A real token that simply has no reference value: return an explained "unavailable" reading, not an error.
+  const u = doc?.untrackedTokens?.find((t) => t.symbol.toLowerCase() === s || t.symbol.toLowerCase() === s + "c");
+  if (u && doc) {
+    return {
+      symbol: u.symbol,
+      address: "0x0000000000000000000000000000000000000000",
+      status: "unavailable",
+      unavailableCode: "no-reference",
+      unavailableReason: "The Tokenized Stocks API publishes no reference value for this token, so it cannot be assayed.",
+      reasons: [],
+      multiplier: u.multiplier,
+      poolsConsidered: 0,
+      poolsRejected: [],
+      readAt: doc.updatedAt,
+    };
+  }
+  return undefined;
 }
 
 export const ageSec = (doc: LatestDoc | null, now = Date.now()) => (doc ? (now - Date.parse(doc.updatedAt)) / 1000 : Infinity);
@@ -44,9 +62,17 @@ export function parseSide(v: unknown): "buy" | "sell" | { error: string } {
 /** Quote the cost of a size against the pool a reading is based on. Read-only estimate. */
 export function probe(doc: LatestDoc | null, symbol: string, usd: number, side: "buy" | "sell") {
   const reading = findReading(doc, symbol);
-  if (!reading) return { ok: false as const, error: `unknown or untracked symbol: ${symbol}` };
+  if (!reading) return { ok: false as const, status: "unknown" as const, error: `unknown symbol: ${symbol}` };
   if (reading.status !== "ok" || !reading.poolUsed) {
-    return { ok: false as const, error: reading.unavailableReason ?? "no usable pool", symbol: reading.symbol };
+    // Explained state, returned with HTTP 200: the request was valid, there is just nothing to quote.
+    return {
+      ok: false as const,
+      status: "unavailable" as const,
+      code: reading.unavailableCode,
+      error: reading.unavailableReason ?? "no usable pool",
+      symbol: reading.symbol,
+      rejectedPools: reading.poolsRejected,
+    };
   }
   const pool = reading.poolUsed as PoolRead;
   const quote: ImpactQuote = quoteImpact(pool, 8, usd, side);

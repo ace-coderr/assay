@@ -20,6 +20,8 @@ export interface Status {
   block: string | null;
   network: string;
   sources: Board["sources"] | null;
+  refresh?: { at: string; durationMs: number; ok: boolean; error?: string; steps: Record<string, number>; consecutiveFailures: number } | null;
+  assayable?: number;
   tracked: number;
   untracked: number | null;
   totalTokens: number | null;

@@ -11,7 +11,7 @@ import {
   type PoolRead,
   type Reading,
 } from "@assay/core";
-import type { ActionEvent, HistoryPoint, LatestDoc, StateEvent, Store, WebhookRec } from "./store.js";
+import type { ActionEvent, HistoryPoint, LatestDoc, RunRecord, StateEvent, Store, WebhookRec } from "./store.js";
 import { deliverWebhooks } from "./webhooks.js";
 
 const HISTORY_CAP = 2016; // 7 days at 5 minute cadence
@@ -36,7 +36,33 @@ export interface RefreshDeps {
   now?: Date;
 }
 
-export async function runRefresh({ store, client = makeClient(), fetchFn = fetch, now = new Date() }: RefreshDeps): Promise<LatestDoc> {
+/**
+ * Runs one refresh and records its health (duration, per-step timing, failures) so problems
+ * are visible on /api/status instead of only in platform logs. Failures are recorded, logged
+ * and re-thrown: a failed run is a real error and is not disguised as success.
+ */
+export async function runRefresh(deps: RefreshDeps): Promise<LatestDoc> {
+  const started = Date.now();
+  const steps: Record<string, number> = {};
+  const prevRun = await deps.store.get<RunRecord>("run").catch(() => null);
+  try {
+    const doc = await refreshOnce(deps, steps);
+    await deps.store.set("run", { at: new Date().toISOString(), durationMs: Date.now() - started, ok: true, steps, consecutiveFailures: 0 } satisfies RunRecord).catch(() => undefined);
+    return doc;
+  } catch (e) {
+    const rec: RunRecord = { at: new Date().toISOString(), durationMs: Date.now() - started, ok: false, error: msg(e), steps, consecutiveFailures: (prevRun?.consecutiveFailures ?? 0) + 1 };
+    console.error("refresh failed", JSON.stringify(rec));
+    await deps.store.set("run", rec).catch(() => undefined);
+    throw e;
+  }
+}
+
+async function refreshOnce({ store, client = makeClient(), fetchFn = fetch, now = new Date() }: RefreshDeps, steps: Record<string, number>): Promise<LatestDoc> {
+  let mark = Date.now();
+  const lap = (name: string) => {
+    steps[name] = Date.now() - mark;
+    mark = Date.now();
+  };
   const prev = await store.get<LatestDoc>("latest");
   const at = now.toISOString();
 
@@ -51,6 +77,7 @@ export async function runRefresh({ store, client = makeClient(), fetchFn = fetch
       block: prev?.block,
       untracked: prev?.untracked ?? 0,
       totalTokens: prev?.totalTokens ?? 0,
+      untrackedTokens: prev?.untrackedTokens,
       readings: prev?.readings ?? [],
       sources: {
         tokensApi: { ok: false, at, error: msg(e) },
@@ -61,6 +88,7 @@ export async function runRefresh({ store, client = makeClient(), fetchFn = fetch
     return doc;
   }
 
+  lap("tokensApi");
   // 2. Multiplier change detection across ALL tokens.
   const prevMult = (await store.get<Record<string, number>>("multipliers")) ?? {};
   const nextMult: Record<string, number> = {};
@@ -86,21 +114,27 @@ export async function runRefresh({ store, client = makeClient(), fetchFn = fetch
   } catch (e) {
     rpc = { ok: false, at, error: `pool discovery failed: ${msg(e)}` };
   }
-  for (const t of refTokens) {
-    const base = { previousMultiplier: prevMult[t.address] };
-    if (!rpc.ok) {
-      readings.push(unavailable(t.symbol, t.address, t.multiplier, at, "RPC unavailable: " + rpc.error));
-      continue;
-    }
-    try {
-      const { pools, block: b } = await readPools(client, t, found.get(t.address) ?? []);
-      block = String(b);
-      readings.push(buildReading({ token: t, pools, now, block, ...base }));
-    } catch (e) {
-      rpc = { ok: false, at, error: msg(e) };
-      readings.push(unavailable(t.symbol, t.address, t.multiplier, at, "RPC read failed: " + msg(e)));
-    }
+  lap("discoverPools");
+  // Pool reads are independent per token: run them concurrently to keep the whole run well under the 30 s limit.
+  const results = await mapLimit(
+    refTokens,
+    4,
+    async (t): Promise<{ reading: Reading; block?: string; error?: string }> => {
+      if (!rpc.ok) return { reading: unavailable(t.symbol, t.address, t.multiplier, at, "RPC unavailable: " + rpc.error) };
+      try {
+        const { pools, block: b } = await readPools(client, t, found.get(t.address) ?? []);
+        return { reading: buildReading({ token: t, pools, now, block: String(b), previousMultiplier: prevMult[t.address] }), block: String(b) };
+      } catch (e) {
+        return { reading: unavailable(t.symbol, t.address, t.multiplier, at, "RPC read failed: " + msg(e)), error: msg(e) };
+      }
+    },
+  );
+  for (const r of results) {
+    readings.push(r.reading);
+    if (r.block) block = r.block;
+    if (r.error) rpc = { ok: false, at, error: r.error };
   }
+  lap("readPools");
 
   const doc: LatestDoc = {
     updatedAt: at,
@@ -108,23 +142,27 @@ export async function runRefresh({ store, client = makeClient(), fetchFn = fetch
     sources: { tokensApi: { ok: true, at }, rpc },
     untracked: tokens.length - refTokens.length,
     totalTokens: tokens.length,
+    untrackedTokens: tokens.filter((t) => t.navPrice == null).map((t) => ({ symbol: t.symbol, multiplier: t.multiplier })),
     readings: serialisable(readings),
   };
 
   // 4. History + state-transition events.
   const events = (await store.get<StateEvent[]>("events")) ?? [];
   const newEvents: StateEvent[] = [];
-  for (const r of doc.readings) {
-    if (r.status !== "ok") continue;
-    const key = `history:${r.symbol}`;
-    const h = (await store.get<HistoryPoint[]>(key)) ?? [];
-    h.push({ t: at, dex: r.dexPrice!, ref: r.reference!, devBps: r.deviationBps!, state: r.state!, depth: r.poolUsed!.usdcDepth });
-    await store.set(key, h.slice(-HISTORY_CAP));
-    const before = prev?.readings.find((p) => p.symbol === r.symbol);
-    const from = before?.status === "ok" ? before.state! : null;
-    if (from !== r.state) newEvents.push({ t: at, symbol: r.symbol, from, to: r.state!, reason: r.reasons[0] ?? "" });
-  }
+  await Promise.all(
+    doc.readings.map(async (r) => {
+      if (r.status !== "ok") return;
+      const key = `history:${r.symbol}`;
+      const h = (await store.get<HistoryPoint[]>(key)) ?? [];
+      h.push({ t: at, dex: r.dexPrice!, ref: r.reference!, devBps: r.deviationBps!, state: r.state!, depth: r.poolUsed!.usdcDepth });
+      await store.set(key, h.slice(-HISTORY_CAP));
+      const before = prev?.readings.find((p) => p.symbol === r.symbol);
+      const from = before?.status === "ok" ? before.state! : null;
+      if (from !== r.state) newEvents.push({ t: at, symbol: r.symbol, from, to: r.state!, reason: r.reasons[0] ?? "" });
+    }),
+  );
   await store.set("events", [...events, ...newEvents].slice(-EVENT_CAP));
+  lap("history");
 
   // 5. Corporate-action events from chain logs (incremental, rate-limited).
   try {
@@ -136,6 +174,7 @@ export async function runRefresh({ store, client = makeClient(), fetchFn = fetch
   }
   await store.set("actions", dedupeActions(actions).slice(-ACTION_CAP));
   await store.set("latest", doc);
+  lap("actionsScan+save");
 
   // 6. Webhooks (best effort; failures never block a reading).
   if (newEvents.length) {
@@ -146,7 +185,22 @@ export async function runRefresh({ store, client = makeClient(), fetchFn = fetch
 }
 
 function unavailable(symbol: string, address: `0x${string}`, multiplier: number, readAt: string, why: string): Reading {
-  return { symbol, address, multiplier, status: "unavailable", unavailableReason: why, reasons: [], poolsConsidered: 0, poolsRejected: [], readAt };
+  return { symbol, address, multiplier, status: "unavailable", unavailableCode: "source-error", unavailableReason: why, reasons: [], poolsConsidered: 0, poolsRejected: [], readAt };
+}
+
+/** Runs `fn` over `items` with at most `limit` in flight, preserving order. */
+async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const out = new Array<R>(items.length);
+  let next = 0;
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, async () => {
+      while (next < items.length) {
+        const i = next++;
+        out[i] = await fn(items[i]!);
+      }
+    }),
+  );
+  return out;
 }
 
 /** JSON-safe copy (bigints to strings) typed as Reading for consumers. */

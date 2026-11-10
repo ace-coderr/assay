@@ -20,8 +20,9 @@ function Detail({ id }: { id: string }) {
           setState({ loading: true });
           try {
             const res = await fetch(`/api/actions/${id}`);
-            const txt = await res.text();
-            setState({ loading: false, body: res.ok ? JSON.stringify(JSON.parse(txt), null, 2) : undefined, error: res.ok ? undefined : `issuer record unavailable (HTTP ${res.status})` });
+            const j = JSON.parse(await res.text());
+            if (!res.ok || j.status === "unavailable") setState({ loading: false, error: `Issuer record unavailable: ${j.reason ?? `HTTP ${res.status}`}` });
+            else setState({ loading: false, body: JSON.stringify(j, null, 2) });
           } catch (e) {
             setState({ loading: false, error: e instanceof Error ? e.message : "failed" });
           }

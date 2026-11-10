@@ -45,6 +45,8 @@ export interface Reading {
   address: `0x${string}`;
   status: "ok" | "unavailable";
   unavailableReason?: string;
+  /** Machine-readable reason a reading is unavailable, so UIs can show a precise state. */
+  unavailableCode?: "no-reference" | "no-pool" | "pool-too-thin" | "source-error";
   state?: State;
   reasons: string[];
   dexPrice?: number;

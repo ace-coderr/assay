@@ -92,7 +92,7 @@ export function buildReading(opts: {
     opts.reference ??
     (token.navPrice != null && token.navUpdatedAt ? { value: token.navPrice, updatedAt: token.navUpdatedAt } : undefined);
   if (!ref) {
-    return { ...base, status: "unavailable", unavailableReason: "no reference value published for this token" };
+    return { ...base, status: "unavailable", unavailableCode: "no-reference", unavailableReason: "no reference value published for this token" };
   }
 
   const good: PoolRead[] = [];
@@ -113,9 +113,10 @@ export function buildReading(opts: {
       ...base,
       ...common,
       status: "unavailable",
+      unavailableCode: pools.length ? "pool-too-thin" : "no-pool",
       unavailableReason: pools.length
-        ? "no pool passes the depth guard"
-        : "no USDC pool found on Uniswap v3 or Aerodrome v2",
+        ? "pools exist but none is deep enough to trust (see the rejected pools)"
+        : "No pool on Base yet: no USDC pool was found on any DEX Assay reads",
     };
   }
   good.sort((a, b) => b.usdcDepth - a.usdcDepth);

@@ -34,7 +34,7 @@ export default function Liquidity() {
     try {
       const r = await fetch(`/api/probe?symbol=${encodeURIComponent(symbol)}&usd=${encodeURIComponent(usd)}&side=${side}`);
       const j = (await r.json()) as Probe;
-      if (!r.ok) setErr(j.error ?? `HTTP ${r.status}`); else setRes(j);
+      if (!r.ok || j.ok === false) setErr(j.error ?? `HTTP ${r.status}`); else setRes(j);
       setSp({ symbol });
     } catch (e) { setErr(e instanceof Error ? e.message : "network error"); }
     finally { setBusy(false); }

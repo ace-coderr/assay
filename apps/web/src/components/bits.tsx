@@ -1,8 +1,17 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { Reading } from "../lib/api";
 
-export function StateBadge({ r }: { r: Pick<Reading, "status" | "state"> }) {
-  if (r.status !== "ok" || !r.state) return <span className="badge unavailable">unavailable</span>;
+const UNAVAILABLE_LABEL: Record<string, string> = {
+  "no-pool": "No pool on Base yet",
+  "pool-too-thin": "Pools too thin",
+  "no-reference": "No reference value",
+  "source-error": "Source error",
+};
+
+export function StateBadge({ r }: { r: Pick<Reading, "status" | "state"> & { unavailableCode?: string } }) {
+  if (r.status !== "ok" || !r.state) {
+    return <span className="badge unavailable">{(r.unavailableCode && UNAVAILABLE_LABEL[r.unavailableCode]) || "unavailable"}</span>;
+  }
   return <span className={`badge ${r.state.toLowerCase()}`}>{r.state.toUpperCase()}</span>;
 }
 

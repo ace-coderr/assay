@@ -14,7 +14,19 @@ export interface LatestDoc {
   /** Count of tokens in the Tokenized Stocks API with no reference value (cannot be assayed). */
   untracked: number;
   totalTokens: number;
+  /** Tokens in the Tokenized Stocks API with no reference value, so requests for them can get an explained state, not an error. */
+  untrackedTokens?: { symbol: string; multiplier: number }[];
   readings: Reading[];
+}
+
+/** Health record of the last scheduled run, exposed on /api/status so failures are visible. */
+export interface RunRecord {
+  at: string;
+  durationMs: number;
+  ok: boolean;
+  error?: string;
+  steps: Record<string, number>;
+  consecutiveFailures: number;
 }
 
 export interface HistoryPoint {
@@ -68,12 +80,21 @@ export interface Store {
 
 export function openStore(): Store {
   const s = getStore({ name: "assay", consistency: "strong" });
+  // One retry: Blobs occasionally fails transiently, and a read or write error would surface as a 5xx.
+  const retry = async <T>(fn: () => Promise<T>): Promise<T> => {
+    try {
+      return await fn();
+    } catch {
+      await new Promise((r) => setTimeout(r, 150));
+      return fn();
+    }
+  };
   return {
     async get<T>(key: string) {
-      return ((await s.get(key, { type: "json" })) as T | null) ?? null;
+      return retry(async () => ((await s.get(key, { type: "json" })) as T | null) ?? null);
     },
     async set(key: string, value: unknown) {
-      await s.set(key, JSON.stringify(value, bigintReplacer));
+      await retry(() => s.set(key, JSON.stringify(value, bigintReplacer)));
     },
   };
 }
