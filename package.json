@@ -12,6 +12,11 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
-    "dev:web": "pnpm --filter @assay/web dev"
+    "dev:web": "pnpm --filter @assay/web dev",
+    "build:mcp": "pnpm --filter @assay/mcp build",
+    "pipeline": "pnpm --filter @assay/pipeline run run"
+  },
+  "bin": {
+    "assay-mcp": "packages/mcp/dist/assay-mcp.mjs"
   }
 }

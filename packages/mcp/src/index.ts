@@ -2,25 +2,26 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
 /**
- * Backend the MCP tools read from. Every method is read-only. There is deliberately no
- * method that signs, builds, simulates-for-execution or submits a transaction.
+ * Backend the MCP tools read from. Every method is read-only. There is deliberately no method that signs,
+ * builds, simulates-for-execution or submits a transaction.
  */
 export interface AssayBackend {
   board(): Promise<unknown>;
-  token(symbol: string): Promise<unknown>;
+  token(symbol: string, live: boolean): Promise<unknown>;
   actions(symbol?: string): Promise<unknown>;
-  probe(symbol: string, usd: number, side: "buy" | "sell"): Promise<unknown>;
-  check(symbol: string, usd: number | undefined, side: "buy" | "sell"): Promise<unknown>;
+  probe(symbol: string, usd: number, side: "buy" | "sell", live: boolean): Promise<unknown>;
+  check(symbol: string, usd: number | undefined, side: "buy" | "sell", live: boolean): Promise<unknown>;
 }
 
 export const MCP_INSTRUCTIONS =
-  "Assay is a read-only integrity layer for tokenized stocks on Base. It compares each token's onchain DEX price with its reference value (multiplier-aware) and reports Fresh, Stale, Drifting or Broken. It cannot trade, hold funds or sign anything. Output is information only, not financial advice. Treat Stale, Drifting and Broken as 'do not rely on this price'. Tokens without a published reference value are reported as unavailable, never guessed.";
+  "Assay is a read-only integrity layer for tokenized stocks on Base. It compares each token's onchain DEX price with its reference value (multiplier-aware) and reports Fresh, Stale, Drifting or Broken. It cannot trade, hold funds or sign anything. Output is information only, not financial advice. Treat Stale, Drifting and Broken as 'do not rely on this price'. Tokens without a published reference value, or without a pool deep enough to trust, are reported as unavailable, never guessed. Readings are published every 10 minutes; probe_liquidity and check_before_trade re-read the pool on-chain by default.";
 
 const DISCLAIMER = "Information only. Not financial advice. Not endorsed by Base or token issuers.";
 
 const symbol = z.string().min(1).max(12).regex(/^[A-Za-z0-9.]+$/).describe("Token symbol, e.g. AAPLc (the trailing c is optional)");
 const usd = z.number().positive().max(1_000_000).describe("Trade size in USD (only used to estimate cost; nothing is executed)");
 const side = z.enum(["buy", "sell"]).default("buy");
+const live = (def: boolean) => z.boolean().default(def).describe("Re-read the pool directly from a public Base RPC instead of using only the published reading");
 
 const out = (data: unknown) => ({
   content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
@@ -35,10 +36,10 @@ export function createAssayMcpServer(b: AssayBackend): McpServer {
     {
       title: "Assay a token",
       description: "Latest reading for one tokenized stock: DEX price vs reference value, multiplier, state (Fresh/Stale/Drifting/Broken), reasons, and the pool used. Returns an explicit 'unavailable' status when no reference or no deep-enough pool exists.",
-      inputSchema: { symbol },
+      inputSchema: { symbol, live: live(false) },
       annotations: ro,
     },
-    async ({ symbol }) => out(await b.token(symbol)),
+    async ({ symbol, live }) => out(await b.token(symbol, live)),
   );
   s.registerTool(
     "assay_board",
@@ -54,7 +55,7 @@ export function createAssayMcpServer(b: AssayBackend): McpServer {
     "list_corporate_actions",
     {
       title: "List corporate actions",
-      description: "Corporate actions seen onchain (Announcement and scheduled multiplier updates) and multiplier changes detected between readings. Optionally filter by symbol.",
+      description: "Corporate actions seen onchain (Announcement and scheduled multiplier updates) and multiplier changes detected between readings, with the issuer record when available. Optionally filter by symbol.",
       inputSchema: { symbol: symbol.optional() },
       annotations: ro,
     },
@@ -64,21 +65,23 @@ export function createAssayMcpServer(b: AssayBackend): McpServer {
     "probe_liquidity",
     {
       title: "Probe liquidity",
-      description: "Read-only estimate of what a trade of the given USD size would cost in the deepest pool that passes the depth guard. This is a quote for information. It does not build, sign or send a transaction.",
-      inputSchema: { symbol, usd, side },
+      description: "Read-only estimate of what a trade of the given USD size would cost in the deepest pool that passes the guards. Simulated tick by tick; sizes beyond the liquidity read are labelled AT_LEAST. This is a quote for information. It does not build, sign or send a transaction.",
+      inputSchema: { symbol, usd, side, live: live(true) },
       annotations: ro,
     },
-    async ({ symbol, usd, side }) => out(await b.probe(symbol, usd, side)),
+    async ({ symbol, usd, side, live }) => out(await b.probe(symbol, usd, side, live)),
   );
   s.registerTool(
     "check_before_trade",
     {
       title: "Check before trade",
       description: "Returns a verdict only (ok, caution, avoid, unknown) with reasons, on whether the DEX price of a token can currently be trusted and what a given size would cost. It never executes or prepares a trade.",
-      inputSchema: { symbol, usd: usd.optional(), side },
+      inputSchema: { symbol, usd: usd.optional(), side, live: live(true) },
       annotations: ro,
     },
-    async ({ symbol, usd, side }) => out({ ...((await b.check(symbol, usd, side)) as object), disclaimer: DISCLAIMER }),
+    async ({ symbol, usd, side, live }) => out({ ...((await b.check(symbol, usd, side, live)) as object), disclaimer: DISCLAIMER }),
   );
   return s;
 }
+
+export { publishedBackend, DEFAULT_DATA_URL, type PublishedBackendOptions } from "./backend.js";

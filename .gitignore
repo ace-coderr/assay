@@ -14,3 +14,4 @@ broadcast/
 CLAUDE.md
 prev/
 out-*/
+!packages/mcp/dist/
