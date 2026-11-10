@@ -146,7 +146,19 @@ export function PageShell() {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [loc.pathname]);
   return (
     <>
-      <a className="skip" href="#main">Skip to content</a>
+      {/* Hash routing owns the URL fragment, so this moves focus instead of navigating to "#main". */}
+      <a
+        className="skip"
+        href="#main"
+        onClick={(e) => {
+          e.preventDefault();
+          const m = document.getElementById("main");
+          m?.setAttribute("tabindex", "-1");
+          m?.focus();
+        }}
+      >
+        Skip to content
+      </a>
       <TopNav />
       <main id="main">
         <Outlet />
