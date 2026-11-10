@@ -5,7 +5,9 @@
   "description": "Read-only integrity layer for tokenized stocks on Base.",
   "license": "MIT",
   "packageManager": "pnpm@9.15.9",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",
