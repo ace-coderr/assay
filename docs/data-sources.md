@@ -101,10 +101,12 @@ only thin pools (SNDKc best pool ≈ $15.6 USDC).
 - Public RPC limits that shaped the design: `mainnet.base.org` returns 429 after bursts;
   `base-rpc.publicnode.com` allows 10 addresses and 50,000 blocks per `eth_getLogs`. The scan is
   therefore incremental, chunked, and keeps a cursor.
-- Total pool balance overstated depth. A Uniswap v3 pool can hold tens of thousands of USDC while
-  its active range is so thin that $34 to $94 moves the price 1% (two GOOGLc pools, one SPCXc pool).
-  Assay computes this cost from `liquidity()`, `slot0()` and the nearest initialized ticks from
-  `tickBitmap()`, and rejects pools under $100.
+- Total pool balance can overstate depth. Assay therefore estimates the cost to move each concentrated-liquidity
+  pool's price 1% by reading every initialized tick within about 3% of the price (`tickBitmap()`, then
+  `ticks().liquidityNet`) and simulating the push tick by tick, and ignores pools under $100.
+  **Correction (2026-11-10):** an earlier version used only the single range between the two nearest initialized
+  ticks, which badly understated the cost (for example CRCLc Slipstream $32 against $64,767 with real tick data;
+  GOOGLc Uniswap pools $34 and $56 against $148 and $815). The multi-tick method replaced it; see docs/coverage.md.
 
 ## 6. Not verified
 

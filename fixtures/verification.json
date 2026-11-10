@@ -1,0 +1,214 @@
+{
+  "checkedAt": "2026-11-10T19:38:12.282Z",
+  "targets": [
+    {
+      "symbol": "AAPLc",
+      "venue": "Aerodrome Slipstream",
+      "pool": "0xF5FCB9CDAFcE67d50AfEf298F88E709d2B946BA6",
+      "factory": "0x9CB220581b91b0C83223012FE69688b92aD07a76",
+      "block": "55745588",
+      "assay": {
+        "price": 348.61545981928117,
+        "tick": -12489,
+        "liquidity": "55577691008247",
+        "usdcDepth": 372355.856703,
+        "feeBps": 2.08,
+        "costToMove1pctUsd": 62159.147344345445,
+        "ticksRead": 48
+      },
+      "rpc": {
+        "publicnode": {
+          "sqrtPriceX96": "42433246718938889628598430839",
+          "tick": -12489,
+          "liquidity": "55577691008247",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "372355856703",
+          "fee": 208
+        },
+        "base.org": {
+          "sqrtPriceX96": "42433246718938889628598430839",
+          "tick": -12489,
+          "liquidity": "55577691008247",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "372355856703",
+          "fee": 208
+        },
+        "1rpc": {
+          "error": "HTTP request failed."
+        },
+        "drpc": {
+          "sqrtPriceX96": "42433246718938889628598430839",
+          "tick": -12489,
+          "liquidity": "55577691008247",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "372355856703",
+          "fee": 208
+        }
+      },
+      "providersAnswered": [
+        "publicnode",
+        "base.org",
+        "drpc"
+      ],
+      "providersIdentical": true,
+      "matchesAssayStoredState": true,
+      "exactPrice": {
+        "integerMath": 348.615459,
+        "assayFloat": 348.61545981928117,
+        "relDiff": 2.3500999748098766e-9
+      }
+    },
+    {
+      "symbol": "CRCLc",
+      "venue": "Aerodrome Slipstream",
+      "pool": "0x294666AD6a415E8C33Af801225c04079BB4f1133",
+      "factory": "0x9CB220581b91b0C83223012FE69688b92aD07a76",
+      "block": "55745612",
+      "assay": {
+        "price": 64.32676082809041,
+        "tick": 4412,
+        "liquidity": "24637782534",
+        "usdcDepth": 106771.249036,
+        "feeBps": 5,
+        "costToMove1pctUsd": 64766.94791144593,
+        "ticksRead": 11
+      },
+      "rpc": {
+        "publicnode": {
+          "sqrtPriceX96": "98783348198439581487227806858",
+          "tick": 4412,
+          "liquidity": "24637782534",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "106771249036",
+          "fee": 500
+        },
+        "base.org": {
+          "sqrtPriceX96": "98783348198439581487227806858",
+          "tick": 4412,
+          "liquidity": "24637782534",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "106771249036",
+          "fee": 500
+        },
+        "1rpc": {
+          "sqrtPriceX96": "98783348198439581487227806858",
+          "tick": 4412,
+          "liquidity": "24637782534",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "106771249036",
+          "fee": 500
+        },
+        "drpc": {
+          "sqrtPriceX96": "98783348198439581487227806858",
+          "tick": 4412,
+          "liquidity": "24637782534",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "106771249036",
+          "fee": 500
+        }
+      },
+      "providersAnswered": [
+        "publicnode",
+        "base.org",
+        "1rpc",
+        "drpc"
+      ],
+      "providersIdentical": true,
+      "matchesAssayStoredState": true,
+      "exactPrice": {
+        "integerMath": 64.32676,
+        "assayFloat": 64.32676082809041,
+        "relDiff": 1.2873186998119348e-8
+      }
+    },
+    {
+      "symbol": "AAPLc",
+      "venue": "Uniswap v3",
+      "pool": "0x97F35d1E92795327614BE000cd18cba1Be2c1931",
+      "factory": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+      "block": "55745623",
+      "assay": {
+        "price": 347.80447572998014,
+        "tick": -12466,
+        "liquidity": "474296457299",
+        "usdcDepth": 22453.555613,
+        "feeBps": 30,
+        "costToMove1pctUsd": 4152.308997837187,
+        "ticksRead": 10
+      },
+      "rpc": {
+        "publicnode": {
+          "sqrtPriceX96": "42482689226836392792609410041",
+          "tick": -12466,
+          "liquidity": "474296457299",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "22453555613",
+          "fee": 3000
+        },
+        "base.org": {
+          "sqrtPriceX96": "42482689226836392792609410041",
+          "tick": -12466,
+          "liquidity": "474296457299",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "22453555613",
+          "fee": 3000
+        },
+        "1rpc": {
+          "error": "HTTP request failed."
+        },
+        "drpc": {
+          "sqrtPriceX96": "42482689226836392792609410041",
+          "tick": -12466,
+          "liquidity": "474296457299",
+          "token0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "usdcBalance": "22453555613",
+          "fee": 3000
+        }
+      },
+      "providersAnswered": [
+        "publicnode",
+        "base.org",
+        "drpc"
+      ],
+      "providersIdentical": true,
+      "matchesAssayStoredState": true,
+      "exactPrice": {
+        "integerMath": 347.804475,
+        "assayFloat": 347.80447572998014,
+        "relDiff": 2.0988232366296575e-9
+      },
+      "quoter": [
+        {
+          "usd": 1000,
+          "quoterStockOut": 2.86331688,
+          "quoterSlippageBps": 41.42664570810473,
+          "quoterTicksCrossed": 2,
+          "assaySlippageBps": 41.426586161272816,
+          "assayTicksCrossed": 1,
+          "assayLowerBound": false,
+          "diffBps": -0.00005954683191333743
+        },
+        {
+          "usd": 5000,
+          "quoterStockOut": 14.24899088,
+          "quoterSlippageBps": 89.06057140300128,
+          "quoterTicksCrossed": 3,
+          "assaySlippageBps": 89.06055187511308,
+          "assayTicksCrossed": 2,
+          "assayLowerBound": false,
+          "diffBps": -0.000019527888198922483
+        },
+        {
+          "usd": 20000,
+          "quoterStockOut": 17.98279757,
+          "quoterSlippageBps": 21976.989455637624,
+          "quoterTicksCrossed": 10,
+          "assaySlippageBps": 99.87912644377595,
+          "assayTicksCrossed": 4,
+          "assayLowerBound": true,
+          "diffBps": -21877.11032919385
+        }
+      ]
+    }
+  ]
+}
