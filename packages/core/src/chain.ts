@@ -1,7 +1,7 @@
 import { createPublicClient, fallback, http, parseAbi, zeroAddress, type PublicClient } from "viem";
 import { base } from "viem/chains";
 import { THRESHOLDS as T } from "./thresholds.js";
-import { tickPrice, v3Price } from "./math.js";
+import { costToMoveUsd, tickPrice, v3Price } from "./math.js";
 import type { PoolRead, TokenRef } from "./types.js";
 
 export const USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" as const;
@@ -160,7 +160,7 @@ export async function readPools(
       });
     });
   }
-  await attachActiveRange(client, pools, block);
+  await attachActiveRange(client, pools, block, token.decimals);
   if (v2.length) {
     const contracts = v2.flatMap((f) => [
       { address: f.pool, abi: v2Pool, functionName: "getReserves" },
@@ -196,7 +196,7 @@ export async function readMultiplier(client: PublicClient, address: `0x${string}
 }
 
 /** Find the initialized ticks bounding the active liquidity range of each v3 pool (reads tickBitmap). */
-async function attachActiveRange(client: PublicClient, pools: PoolRead[], block: bigint): Promise<void> {
+async function attachActiveRange(client: PublicClient, pools: PoolRead[], block: bigint, tokenDecimals: number): Promise<void> {
   const v3 = pools.filter((p) => p.venue === "uniswap-v3" && p.tick != null && p.tickSpacing && (p.liquidity ?? 0n) > 0n);
   if (!v3.length) return;
   const calls = v3.flatMap((p) => {
@@ -221,5 +221,20 @@ async function attachActiveRange(client: PublicClient, pools: PoolRead[], block:
     for (let c = comp + 1; c <= comp + 256 && hi === undefined; c++) if (bitSet(c)) hi = c * p.tickSpacing!;
     p.tickLower = lo;
     p.tickUpper = hi;
+    const m = costToMoveUsd({
+      sqrtPriceX96: p.sqrtPriceX96!,
+      liquidity: p.liquidity!,
+      tick: p.tick!,
+      tickSpacing: p.tickSpacing!,
+      tickLower: lo,
+      tickUpper: hi,
+      tokenIsToken0: !!p.tokenIsToken0,
+      tokenDecimals,
+      bps: 100,
+    });
+    if (m) {
+      p.costToMove100bpsUsd = m.usd;
+      p.costRangeLimited = m.rangeLimited;
+    }
   });
 }

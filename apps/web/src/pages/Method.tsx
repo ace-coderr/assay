@@ -102,6 +102,7 @@ reference is already total return:
               <dt>Broken above</dt><dd>{th.brokenBps} bps</dd>
               <dt>Reference max age</dt><dd>{(th.maxReferenceAgeSec / 3600).toFixed(0)} h (feed heartbeat 24 h + margin)</dd>
               <dt>Min pool depth</dt><dd>${th.minDepthUsd} USDC and non-zero in-range liquidity</dd>
+              <dt>Min cost to move 1%</dt><dd>${th.minCostToMove100bpsUsd}</dd>
               <dt>TWAP divergence</dt><dd>{th.twapDivergenceBps} bps over {th.twapWindowSec / 60} min</dd>
               <dt>Pool disagreement</dt><dd>{th.poolDisagreementBps} bps</dd>
             </dl>
@@ -114,6 +115,7 @@ reference is already total return:
         <ul style={{ color: "var(--muted)", fontSize: 14.5 }}>
           <li>A Uniswap v3 pool with zero in-range liquidity still reports a price. Live examples were far off (5000 vs ~643, 999.99 vs ~350, 3.4e40). Such pools are rejected, and the reason is shown.</li>
           <li>Pools holding under $1,000 of USDC are ignored.</li>
+          <li>A pool's total balance can overstate its depth, because liquidity outside the current price range cannot defend the price. Assay also computes the cost to push each Uniswap v3 pool's price 1% within its active range, and ignores pools where that costs under $100. Live examples: two GOOGLc pools needed only $34 and $56.</li>
           <li>The deepest qualifying pool is used. If another qualifying pool disagrees by more than 300 bps, or spot differs from the 30 minute TWAP by more than 300 bps, the reading is Broken.</li>
           <li>Aerodrome v2 pools have no onchain TWAP read, so only depth and cross-pool agreement protect them.</li>
           <li>Probe estimates are lower bounds when a size leaves the pool's current liquidity range.</li>

@@ -81,3 +81,52 @@ export function v3Impact(opts: {
   const exceedsRange = tickEnd < lo || tickEnd >= hi;
   return { slippageBps: move * 1e4 + opts.feeBps, endPrice: p1, exceedsRange };
 }
+
+export interface MoveCost {
+  /** USD a trader would need to spend to push the spot price `bps` away, in the cheaper direction. */
+  usd: number;
+  /** True when the active liquidity range ends first: the real cost is higher than `usd`. */
+  rangeLimited: boolean;
+}
+
+/**
+ * Cost to move a Uniswap v3 pool spot price by `bps` within the current liquidity range.
+ * This is what a manipulator would have to pay, so it is a better thin-pool guard than the
+ * pool total token balance (which includes out-of-range liquidity that cannot defend the price).
+ */
+export function costToMoveUsd(opts: {
+  sqrtPriceX96: bigint;
+  liquidity: bigint;
+  tick: number;
+  tickSpacing: number;
+  tickLower?: number;
+  tickUpper?: number;
+  tokenIsToken0: boolean;
+  tokenDecimals: number;
+  bps: number;
+}): MoveCost | null {
+  const L = Number(opts.liquidity);
+  if (L <= 0) return null;
+  const sp = Number(opts.sqrtPriceX96) / Q96;
+  const price = v3Price(opts.sqrtPriceX96, opts.tokenIsToken0, opts.tokenDecimals);
+  const lo = opts.tickLower ?? Math.floor(opts.tick / opts.tickSpacing) * opts.tickSpacing;
+  const hi = opts.tickUpper ?? lo + opts.tickSpacing;
+  const spLo = Math.sqrt(Math.pow(1.0001, lo));
+  const spHi = Math.sqrt(Math.pow(1.0001, hi));
+  const b = opts.bps / 1e4;
+  const tokScale = 10 ** opts.tokenDecimals;
+
+  // Target sqrt prices for the token price going up (buy) and down (sell).
+  const up = opts.tokenIsToken0 ? sp * Math.sqrt(1 + b) : sp / Math.sqrt(1 + b);
+  const down = opts.tokenIsToken0 ? sp * Math.sqrt(1 - b) : sp / Math.sqrt(1 - b);
+  const clamp = (t: number) => Math.min(spHi, Math.max(spLo, t));
+  const upC = clamp(up);
+  const downC = clamp(down);
+
+  // Buy: USDC in. USDC is token1 when the token is token0 (dy = L*dSqrt), else token0 (dx = L*(1/s' - 1/s)).
+  const buyUsdc = opts.tokenIsToken0 ? (L * Math.abs(upC - sp)) / 1e6 : (L * Math.abs(1 / upC - 1 / sp)) / 1e6;
+  // Sell: tokens in, valued at spot.
+  const sellTokens = opts.tokenIsToken0 ? (L * Math.abs(1 / downC - 1 / sp)) / tokScale : (L * Math.abs(downC - sp)) / tokScale;
+  const sellUsd = sellTokens * price;
+  return buyUsdc <= sellUsd ? { usd: buyUsdc, rangeLimited: upC !== up } : { usd: sellUsd, rangeLimited: downC !== down };
+}

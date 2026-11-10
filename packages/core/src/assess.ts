@@ -16,6 +16,12 @@ export function vetPool(p: PoolRead): PoolVerdict {
   if (p.usdcDepth < T.minDepthUsd) {
     return { ok: false, why: `USDC depth $${p.usdcDepth.toFixed(2)} below $${T.minDepthUsd}` };
   }
+  if (p.costToMove100bpsUsd != null && p.costToMove100bpsUsd < T.minCostToMove100bpsUsd) {
+    return {
+      ok: false,
+      why: `only $${p.costToMove100bpsUsd.toFixed(0)} moves the price 1% (minimum $${T.minCostToMove100bpsUsd}): too cheap to manipulate`,
+    };
+  }
   return { ok: true };
 }
 

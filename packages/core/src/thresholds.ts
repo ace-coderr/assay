@@ -11,6 +11,8 @@ export const THRESHOLDS = {
   brokenBps: 500,
   /** Pool USDC balance below this is too thin to trust. */
   minDepthUsd: 1000,
+  /** A pool whose price can be pushed 1% for less than this many USD is too cheap to manipulate to be trusted. */
+  minCostToMove100bpsUsd: 100,
   /** Spot vs 30 min TWAP divergence above this suggests manipulation: Broken. */
   twapDivergenceBps: 300,
   /** Two qualifying pools disagreeing by more than this: Broken. */

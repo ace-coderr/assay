@@ -31,6 +31,10 @@ export interface PoolRead {
   /** Nearest initialized ticks around the current tick: bounds of the active liquidity range. */
   tickLower?: number;
   tickUpper?: number;
+  /** USD needed to push this pool spot price 1% (cheaper direction): the manipulation cost. */
+  costToMove100bpsUsd?: number;
+  /** The active liquidity range ends before a 1% move: the true cost is higher. */
+  costRangeLimited?: boolean;
   /** token0 is the stock token (affects impact math). */
   tokenIsToken0?: boolean;
   sqrtPriceX96?: bigint;

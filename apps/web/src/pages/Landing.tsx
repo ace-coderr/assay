@@ -111,19 +111,19 @@ export default function Landing() {
             <p className="sub">A DEX quote is a claim. An assay checks the claim against something it cannot fake cheaply.</p>
           </Reveal>
           <Reveal delay={80}>
-            <div className="compare" role="table" aria-label="Comparison">
-              <div className="left" role="rowgroup">
-                <div className="col-h" role="columnheader">Trusting a price</div>
+            <div className="compare">
+              <section className="left" aria-label="Trusting a price">
+                <h3 className="col-h">Trusting a price</h3>
                 {COMPARE.map(([k, a]) => (
-                  <div key={k} className="cell" role="cell"><span className="k">{k}</span>{a}</div>
+                  <div key={k} className="cell"><span className="k">{k}</span>{a}</div>
                 ))}
-              </div>
-              <div role="rowgroup">
-                <div className="col-h assay" role="columnheader">Assaying it</div>
+              </section>
+              <section aria-label="Assaying it">
+                <h3 className="col-h assay">Assaying it</h3>
                 {COMPARE.map(([k, , b]) => (
-                  <div key={k} className="cell" role="cell"><span className="k">{k}</span>{b}</div>
+                  <div key={k} className="cell"><span className="k">{k}</span>{b}</div>
                 ))}
-              </div>
+              </section>
             </div>
           </Reveal>
         </section>

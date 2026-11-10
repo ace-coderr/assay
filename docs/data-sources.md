@@ -88,7 +88,25 @@ AAPLc 0.01% pool: 999.9998). Healthy pools were within ~0.05% to 0.8% of the
 reference (e.g. AAPLc 0.3% pool $26.6k USDC depth: 351.39 vs 350.49). Some tokens have
 only thin pools (SNDKc best pool ≈ $15.6 USDC).
 
-## 5. Not verified
+## 5. Observed after deployment (2026-11-10)
+
+- The token list grew from 318 to 328 records in one day; Assay paginates and re-reads it every run.
+- Only 12 tokens still carry `nav_price`; the rest are not assayed.
+- Corporate actions are discoverable onchain. The scheduled scan found a real **Cash Dividend** on
+  NOKc: an `Announcement` (description "Cash Dividend", `uri` ending in a UUID that the
+  `/corporate-actions/{uuid}` endpoint resolves) in the same transaction as a
+  `UIMultiplierUpdated` event (multiplier 1 to 1.00196). Event signatures were checked against the
+  documented topic0 hashes:
+  `Announcement(address,string,string,string)` and `UIMultiplierUpdated(uint256,uint256,uint256)`.
+- Public RPC limits that shaped the design: `mainnet.base.org` returns 429 after bursts;
+  `base-rpc.publicnode.com` allows 10 addresses and 50,000 blocks per `eth_getLogs`. The scan is
+  therefore incremental, chunked, and keeps a cursor.
+- Total pool balance overstated depth. A Uniswap v3 pool can hold tens of thousands of USDC while
+  its active range is so thin that $34 to $94 moves the price 1% (two GOOGLc pools, one SPCXc pool).
+  Assay computes this cost from `liquidity()`, `slot0()` and the nearest initialized ticks from
+  `tickBitmap()`, and rejects pools under $100.
+
+## 6. Not verified
 
 - **Block explorer cross-check:** Blockscout is behind a Cloudflare bot challenge
   and Etherscan's API does not serve Base on the free plan, so no explorer API

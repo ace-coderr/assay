@@ -7,7 +7,7 @@
   --line-2: #2a3242;
   --text: #e8eef8;
   --muted: #8d99ad;
-  --dim: #5f6b7f;
+  --dim: #7a869b; /* 5.3:1 on --bg, passes WCAG AA for small text */
   --blue: #0052ff;
   --blue-hi: #3c8aff;
   --blue-soft: rgba(0, 82, 255, 0.14);
@@ -158,7 +158,7 @@ pre { background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
 
 .compare { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--panel); }
 .compare > div { padding: 0; }
-.compare .col-h { padding: 16px 20px; font-weight: 600; border-bottom: 1px solid var(--line); background: var(--panel-2); }
+.compare .col-h { margin: 0; font-size: inherit; padding: 16px 20px; font-weight: 600; border-bottom: 1px solid var(--line); background: var(--panel-2); }
 .compare .col-h.assay { color: var(--blue-hi); }
 .compare .cell { padding: 14px 20px; border-bottom: 1px solid var(--line); font-size: 14.5px; min-height: 58px; }
 .compare .cell:last-child { border-bottom: 0; }

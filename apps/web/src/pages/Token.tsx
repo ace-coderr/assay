@@ -95,6 +95,8 @@ export default function Token() {
                     <dt>Venue</dt><dd>{r.poolUsed?.venue}{r.poolUsed?.feeBps != null ? ` · ${(r.poolUsed.feeBps / 100).toFixed(2)}% fee` : ""}</dd>
                     <dt>Address</dt><dd><a href={explorer(r.poolUsed!.pool)} target="_blank" rel="noreferrer">{r.poolUsed!.pool}</a></dd>
                     <dt>USDC depth</dt><dd>{fmtUsd(r.poolUsed?.usdcDepth)}</dd>
+                    <dt>Cost to move 1%</dt>
+                    <dd>{r.poolUsed?.costToMove100bpsUsd != null ? `${r.poolUsed.costRangeLimited ? "≥ " : ""}${fmtUsd(r.poolUsed.costToMove100bpsUsd)}` : "n/a (constant-product pool)"}</dd>
                     <dt>Pools found</dt><dd>{r.poolsConsidered} ({r.poolsRejected.length} rejected)</dd>
                   </dl>
                   {r.poolsRejected.length > 0 && (
