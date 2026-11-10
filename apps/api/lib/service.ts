@@ -82,6 +82,10 @@ export function probe(doc: LatestDoc | null, symbol: string, usd: number, side: 
     readAt: reading.readAt,
     pool: { address: pool.pool, venue: pool.venue, feeBps: pool.feeBps, usdcDepth: pool.usdcDepth, spotPrice: pool.spotPrice },
     quote,
+    label: quote.lowerBound ? "AT_LEAST" : "ESTIMATE",
+    explanation: quote.lowerBound
+      ? "At least: this size is larger than the liquidity at the pool's current price range, so the trade would move through further price ranges and the true cost is higher than shown. Assay does not simulate those ranges."
+      : "Estimate within the pool's current price range, fee included.",
     method:
       pool.venue === "uniswap-v3"
         ? "Constant-liquidity estimate within the pool's current price range, fee included."

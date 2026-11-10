@@ -77,13 +77,21 @@ export default function Liquidity() {
         <div className="card" style={{ marginTop: 16 }} aria-live="polite">
           <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 10 }}>
             <div>
-              <div className="dim" style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em" }}>Estimated cost vs spot</div>
+              <div className="dim" style={{ fontSize: 12, textTransform: "uppercase", letterSpacing: ".08em", display: "flex", gap: 8, alignItems: "center" }}>
+                {q.lowerBound ? "Cost vs spot" : "Estimated cost vs spot"}
+                {q.lowerBound && <span className="badge drifting" title="The real cost is higher than this number">AT LEAST</span>}
+              </div>
               <div style={{ fontSize: 40, fontWeight: 700, letterSpacing: "-0.02em" }} className={q.slippageBps != null && q.slippageBps > 100 ? "coral" : ""}>
                 {q.slippageBps == null ? "n/a" : `${q.lowerBound ? "≥ " : ""}${q.slippageBps.toFixed(0)} bps`}
               </div>
               <div className="muted" style={{ fontSize: 14 }}>
                 {q.slippageBps == null ? q.note : `${fmtUsd(Number(usd))} ${side}, fee ${q.feeBps} bps included`}
               </div>
+              {q.lowerBound && (
+                <div className="coral" style={{ fontSize: 13.5, marginTop: 6, maxWidth: 460 }} role="note">
+                  &ldquo;At least&rdquo; means this size is bigger than the liquidity at the pool&rsquo;s current price, so the true cost is higher than shown.
+                </div>
+              )}
             </div>
             <dl className="kv" style={{ alignContent: "start" }}>
               <dt>Pool</dt><dd><a href={explorer(res.pool!.address)} target="_blank" rel="noreferrer">{res.pool!.address.slice(0, 10)}…</a> ({res.pool!.venue})</dd>

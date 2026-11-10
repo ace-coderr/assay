@@ -75,6 +75,34 @@ describe("expected conditions are explained states, not errors", () => {
   });
 });
 
+describe("probe labels", () => {
+  it("labels a size beyond the active range AT_LEAST with an explanation, and a small size ESTIMATE", async () => {
+    const s = memoryStore();
+    const now = new Date().toISOString();
+    const raw = (350 * 1e6) / 1e8;
+    const sqrtPriceX96 = BigInt(Math.floor(Math.sqrt(raw) * 2 ** 96)).toString();
+    const tick = Math.floor(Math.log(raw) / Math.log(1.0001));
+    const lo = Math.floor(tick / 60) * 60;
+    await s.set("latest", {
+      updatedAt: now,
+      sources: { tokensApi: { ok: true, at: now }, rpc: { ok: true, at: now } },
+      untracked: 0,
+      totalTokens: 1,
+      readings: [{
+        symbol: "TESTc", address: "0x0000000000000000000000000000000000000001", status: "ok", state: "Fresh", reasons: [], multiplier: 1,
+        dexPrice: 350, reference: 350, deviationBps: 0, poolsConsidered: 1, poolsRejected: [], readAt: now,
+        poolUsed: { venue: "uniswap-v3", pool: "0x0000000000000000000000000000000000000002", feeBps: 30, spotPrice: 350, usdcDepth: 20000, liquidity: "20000000000", sqrtPriceX96, tick, tickSpacing: 60, tickLower: lo, tickUpper: lo + 60, tokenIsToken0: true },
+      }],
+    });
+    const small = await (await handle(req("/api/probe?symbol=TESTc&usd=10"), s)).json();
+    expect(small.label).toBe("ESTIMATE");
+    const big = await (await handle(req("/api/probe?symbol=TESTc&usd=500000"), s)).json();
+    expect(big.label).toBe("AT_LEAST");
+    expect(big.quote.lowerBound).toBe(true);
+    expect(big.explanation).toMatch(/^At least:/);
+  });
+});
+
 describe("refresh health recording", () => {
   it("records a failed run and re-throws instead of hiding it", async () => {
     const bad = {
