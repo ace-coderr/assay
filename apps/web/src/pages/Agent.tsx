@@ -9,6 +9,22 @@ const TOOLS: [string, string, string][] = [
   ["check_before_trade", "{ symbol, usd?, side, live? }", "A verdict only: ok, caution, avoid or unknown, with reasons. Never executes or prepares a trade."],
 ];
 
+// Captured with packages/mcp/scripts/capture-example.mjs against the real data and a live Base RPC read.
+const EXAMPLE = `request:  check_before_trade { "symbol": "AAPLc", "usd": 2000, "side": "buy" }
+
+response: {
+  "verdict": "ok",
+  "reasons": [
+    "within 100 bps of reference (12 bps)",
+    "a $2000 buy costs about 3 bps in the deepest pool"
+  ],
+  "readOnly": true,
+  "source": "live",
+  "symbol": "AAPLc",
+  "quote": { "side": "buy", "sizeUsd": 2000, "slippageBps": 2.8, "lowerBound": false, "feeBps": 2.67, "ticksCrossed": 0 },
+  "disclaimer": "Information only. Not financial advice. Not endorsed by Base or token issuers."
+}`;
+
 export default function Agent() {
   return (
     <>
@@ -58,6 +74,12 @@ export default function Agent() {
           <tbody>{TOOLS.map(([n, i, d]) => <tr key={n}><td><code>{n}</code></td><td><code>{i}</code></td><td className="muted">{d}</td></tr>)}</tbody>
         </table>
       </div>
+
+      <h2 style={{ fontSize: 22, margin: "28px 0 12px" }}>Example</h2>
+      <p className="muted" style={{ fontSize: 14 }}>
+        A real exchange captured from the built server on 2026-11-10 at 23:27 UTC. Your agent sends the request as an MCP tool call; prices and bps will differ when you run it.
+      </p>
+      <CopyBlock text={EXAMPLE} label="Copy" />
 
       <p className="notice">
         What an agent should do with a verdict: <b>ok</b> means the price check passed and the size fits the pool; <b>caution</b> means slow down or reduce size; <b>avoid</b> means do not act on this price; <b>unknown</b> means Assay cannot say (no reference, no deep pool, or data that is too old).

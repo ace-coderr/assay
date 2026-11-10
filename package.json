@@ -18,5 +18,8 @@
   },
   "bin": {
     "assay-mcp": "packages/mcp/dist/assay-mcp.mjs"
-  }
+  },
+  "files": [
+    "packages/mcp/dist"
+  ]
 }
