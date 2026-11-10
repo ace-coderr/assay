@@ -37,4 +37,8 @@ export default async (req: Request): Promise<Response> => {
   return new Response(res.body, { status: res.status, headers });
 };
 
-export const config: Config = { path: "/mcp" };
+// Global limit enforced by Netlify's edge (shared across all instances): 60 requests per minute per IP.
+export const config: Config & { rateLimit: { windowLimit: number; windowSize: number; aggregateBy: string[] } } = {
+  path: "/mcp",
+  rateLimit: { windowLimit: 60, windowSize: 60, aggregateBy: ["ip", "domain"] },
+};
