@@ -1,4 +1,4 @@
-import { createPublicClient, http, parseAbi, zeroAddress, type PublicClient } from "viem";
+import { createPublicClient, fallback, http, parseAbi, zeroAddress, type PublicClient } from "viem";
 import { base } from "viem/chains";
 import { THRESHOLDS as T } from "./thresholds.js";
 import { tickPrice, v3Price } from "./math.js";
@@ -10,10 +10,14 @@ export const AERO_V2_FACTORY = "0x420DD381b31aEf6683db6B902084cB0FFECe40Da" as c
 export const API_BASE = "https://api.coinbase.com/v1/tokenized-stocks";
 export const FEE_TIERS = [100, 500, 3000, 10000] as const;
 
-export const DEFAULT_RPCS = ["https://mainnet.base.org", "https://base-rpc.publicnode.com"];
+export const DEFAULT_RPCS = ["https://base-rpc.publicnode.com", "https://mainnet.base.org"];
 
 export function makeClient(rpcUrl?: string): PublicClient {
-  return createPublicClient({ chain: base, transport: http(rpcUrl ?? process.env.BASE_RPC_URL ?? DEFAULT_RPCS[0]) }) as PublicClient;
+  const urls = rpcUrl ?? process.env.BASE_RPC_URL ? [rpcUrl ?? process.env.BASE_RPC_URL!, ...DEFAULT_RPCS] : DEFAULT_RPCS;
+  return createPublicClient({
+    chain: base,
+    transport: fallback(urls.map((u) => http(u, { timeout: 12_000, retryCount: 1 }))),
+  }) as PublicClient;
 }
 
 const v3Factory = parseAbi(["function getPool(address,address,uint24) view returns (address)"]);
@@ -23,6 +27,7 @@ const v3Pool = parseAbi([
   "function liquidity() view returns (uint128)",
   "function token0() view returns (address)",
   "function tickSpacing() view returns (int24)",
+  "function tickBitmap(int16 wordPos) view returns (uint256)",
   "function observe(uint32[] secondsAgos) view returns (int56[] tickCumulatives, uint160[] secondsPerLiquidityCumulativeX128s)",
 ]);
 const v2Pool = parseAbi([
@@ -155,6 +160,7 @@ export async function readPools(
       });
     });
   }
+  await attachActiveRange(client, pools, block);
   if (v2.length) {
     const contracts = v2.flatMap((f) => [
       { address: f.pool, abi: v2Pool, functionName: "getReserves" },
@@ -187,4 +193,33 @@ export async function readPools(
 export async function readMultiplier(client: PublicClient, address: `0x${string}`): Promise<number> {
   const m = await client.readContract({ address, abi: erc20, functionName: "multiplier" });
   return Number(m) / 1e18;
+}
+
+/** Find the initialized ticks bounding the active liquidity range of each v3 pool (reads tickBitmap). */
+async function attachActiveRange(client: PublicClient, pools: PoolRead[], block: bigint): Promise<void> {
+  const v3 = pools.filter((p) => p.venue === "uniswap-v3" && p.tick != null && p.tickSpacing && (p.liquidity ?? 0n) > 0n);
+  if (!v3.length) return;
+  const calls = v3.flatMap((p) => {
+    const w = Math.floor(Math.floor(p.tick! / p.tickSpacing!) / 256);
+    return [w - 1, w, w + 1].map((wp) => ({ address: p.pool, abi: v3Pool, functionName: "tickBitmap", args: [wp] }));
+  });
+  const res = await client.multicall({ contracts: calls as any, allowFailure: true, blockNumber: block });
+  v3.forEach((p, i) => {
+    const comp = Math.floor(p.tick! / p.tickSpacing!);
+    const w = Math.floor(comp / 256);
+    const words = res.slice(i * 3, i * 3 + 3).map((r) => (r.status === "success" ? (r.result as bigint) : null));
+    if (words.some((x) => x === null)) return;
+    const bitSet = (c: number) => {
+      const wp = Math.floor(c / 256);
+      const word = words[wp - (w - 1)];
+      if (word == null) return false;
+      return ((word >> BigInt(((c % 256) + 256) % 256)) & 1n) === 1n;
+    };
+    let lo: number | undefined;
+    let hi: number | undefined;
+    for (let c = comp; c >= comp - 256 * 1 && lo === undefined; c--) if (bitSet(c)) lo = c * p.tickSpacing!;
+    for (let c = comp + 1; c <= comp + 256 && hi === undefined; c++) if (bitSet(c)) hi = c * p.tickSpacing!;
+    p.tickLower = lo;
+    p.tickUpper = hi;
+  });
 }

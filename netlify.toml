@@ -1,3 +1,4 @@
 [build]
+  command = "pnpm --filter @assay/api build"
   publish = "apps/web/public"
-  functions = "apps/api/netlify/functions"
+  functions = "apps/api/dist/functions"

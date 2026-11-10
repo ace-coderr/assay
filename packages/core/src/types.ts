@@ -28,6 +28,9 @@ export interface PoolRead {
   twapNote?: string;
   tick?: number;
   tickSpacing?: number;
+  /** Nearest initialized ticks around the current tick: bounds of the active liquidity range. */
+  tickLower?: number;
+  tickUpper?: number;
   /** token0 is the stock token (affects impact math). */
   tokenIsToken0?: boolean;
   sqrtPriceX96?: bigint;

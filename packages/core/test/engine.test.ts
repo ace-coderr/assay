@@ -152,3 +152,38 @@ describe("math", () => {
     expect(deviationBps(99, 100)).toBeCloseTo(-100, 6);
   });
 });
+
+import { verdictFor, quoteImpact, v2Impact } from "../src/index.js";
+
+describe("verdict (read-only)", () => {
+  const aapl = tok("AAPLc");
+  const now = at(aapl.navUpdatedAt!, 1);
+  const fresh = buildReading({ token: aapl, pools: poolsFor("AAPLc"), now });
+  it("never executes: result is flagged readOnly with a disclaimer", () => {
+    const v = verdictFor(fresh, undefined, 10);
+    expect(v.readOnly).toBe(true);
+    expect(v.disclaimer).toMatch(/Not financial advice/);
+  });
+  it("ok for a fresh reading", () => expect(verdictFor(fresh, undefined, 10).verdict).toBe("ok"));
+  it("unknown when our reading is old", () => expect(verdictFor(fresh, undefined, 3600).verdict).toBe("unknown"));
+  it("unknown for an unavailable reading", () => {
+    const r = buildReading({ token: tok("CRCLc"), pools: [], now });
+    expect(verdictFor(r, undefined, 10).verdict).toBe("unknown");
+  });
+  it("caution for stale, avoid for broken", () => {
+    const stale = buildReading({ token: aapl, pools: poolsFor("AAPLc"), now: at(aapl.navUpdatedAt!, 60) });
+    expect(verdictFor(stale, undefined, 10).verdict).toBe("caution");
+    const broken = buildReading({ token: aapl, pools: poolsFor("AAPLc"), now, previousMultiplier: 2 });
+    expect(verdictFor(broken, undefined, 10).verdict).toBe("avoid");
+  });
+  it("v2 impact grows with size", () => {
+    const a = v2Impact(10_000, 30, 100, "buy").slippageBps;
+    const b = v2Impact(10_000, 30, 5_000, "buy").slippageBps;
+    expect(b).toBeGreaterThan(a);
+    expect(a).toBeGreaterThanOrEqual(30);
+  });
+  it("quoteImpact on a real v3-shaped pool without state returns null instead of guessing", () => {
+    const p = poolsFor("AAPLc")[1]!;
+    expect(quoteImpact(p, 8, 1000, "buy").slippageBps).toBeNull();
+  });
+});

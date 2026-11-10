@@ -42,6 +42,9 @@ export function v3Impact(opts: {
   liquidity: bigint;
   tick: number;
   tickSpacing: number;
+  /** Initialized ticks bounding the active range. Falls back to one tick spacing (very conservative). */
+  tickLower?: number;
+  tickUpper?: number;
   tokenIsToken0: boolean;
   tokenDecimals: number;
   feeBps: number;
@@ -73,7 +76,8 @@ export function v3Impact(opts: {
   const avg = (p0 + p1) / 2;
   const move = opts.side === "buy" ? (avg - p0) / p0 : (p0 - avg) / p0;
   const tickEnd = Math.log(sp1 * sp1) / Math.log(1.0001);
-  const lo = Math.floor(opts.tick / opts.tickSpacing) * opts.tickSpacing;
-  const exceedsRange = tickEnd < lo || tickEnd >= lo + opts.tickSpacing;
+  const lo = opts.tickLower ?? Math.floor(opts.tick / opts.tickSpacing) * opts.tickSpacing;
+  const hi = opts.tickUpper ?? lo + opts.tickSpacing;
+  const exceedsRange = tickEnd < lo || tickEnd >= hi;
   return { slippageBps: move * 1e4 + opts.feeBps, endPrice: p1, exceedsRange };
 }
