@@ -18,12 +18,16 @@ export default function Attestations() {
 
   useEffect(() => {
     if (!deployment) return;
-    const client = createPublicClient({ chain: baseSepolia, transport: http("https://sepolia.base.org") });
+    // sepolia.base.org caps eth_getLogs at 200 blocks; publicnode allows 50,000, so scan in chunks of that size.
+    const client = createPublicClient({ chain: baseSepolia, transport: http("https://base-sepolia-rpc.publicnode.com") });
     (async () => {
       try {
         const head = await client.getBlockNumber();
-        const from = BigInt(deployment.block);
-        const logs = await client.getLogs({ address: deployment.address, event: EVENT, fromBlock: from, toBlock: head > from + 9000n ? from + 9000n : head });
+        const logs = [];
+        for (let from = BigInt(deployment.block); from <= head && logs.length < 500; from += 50_000n) {
+          const to = from + 49_999n > head ? head : from + 49_999n;
+          logs.push(...(await client.getLogs({ address: deployment.address, event: EVENT, fromBlock: from, toBlock: to })));
+        }
         setRows(logs.reverse().map((l) => ({
           token: l.args.token!, attester: l.args.attester!, price: Number(formatUnits(l.args.price!, 8)), ref: Number(formatUnits(l.args.referencePrice!, 8)),
           ts: Number(l.args.timestamp), state: STATES[l.args.state!] ?? "?", tx: l.transactionHash, block: l.blockNumber,

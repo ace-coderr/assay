@@ -5,7 +5,7 @@ import { Attribution } from "ox/erc8021";
 
 // Testnet only. There is deliberately no mainnet chain in this file.
 export const chain = baseSepolia;
-export const RPC = process.env.BASE_SEPOLIA_RPC_URL ?? "https://sepolia.base.org";
+export const RPC = process.env.BASE_SEPOLIA_RPC_URL ?? "https://base-sepolia-rpc.publicnode.com"; // sepolia.base.org limits getLogs to 200 blocks
 export const publicClient = createPublicClient({ chain, transport: http(RPC) });
 
 export function need(name: string): string {
