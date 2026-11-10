@@ -44,6 +44,26 @@ The repository is public, which is what makes Actions minutes and Pages free.
 - **Secrets.** The pipeline uses only public APIs and needs no secrets. The deployer private key for the Base Sepolia
   attestations is never added to GitHub Actions or any secret; attestation signing stays local-only.
 
+## Retiring the old Netlify site
+
+The previous site (`assay-onbase.netlify.app`) still serves the old engine and will keep doing so until it is deleted.
+Netlify has no "unpublish" switch: deleting the project is what takes it down. In the Netlify dashboard:
+
+1. Sign in at https://app.netlify.com and open the project **assay-onbase**.
+2. In the left sidebar choose **Project configuration**, then **General**.
+3. Scroll to the bottom, to **Danger zone**, and click **Delete this project**.
+4. Type the project name (`assay-onbase`) when asked and confirm.
+
+Deleting is permanent: the old URL stops working and the Blobs data is erased. That is what we want, because the data
+now lives on the `data` branch. If you prefer the command line (you are logged in as the owner):
+
+```bash
+npx netlify-cli sites:delete 4ac4886c-5d9f-4d6f-916e-38b6104641cf
+```
+
+Nothing in this repository depends on the Netlify project any more. The Netlify GitHub app link on the repository
+settings page can also be removed (GitHub, Settings, Applications), but it is harmless once the project is deleted.
+
 ## Cost
 
 Free. Public-repository Actions minutes, GitHub Pages, and `raw.githubusercontent.com` cost nothing, and the public
