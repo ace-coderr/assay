@@ -220,13 +220,16 @@ pre { background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
 .page-h p { color: var(--muted); margin: 6px 0 0; max-width: 640px; font-size: 15px; }
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-2 > *, .grid-3 > *, .app > *, .card { min-width: 0; }
+.copy pre { padding-right: 76px; white-space: pre; }
+.card pre, .copy pre { max-width: 100%; }
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; font-size: 14px; }
 .kv dt { color: var(--dim); }
 .kv dd { margin: 0; font-family: var(--mono); font-size: 13px; word-break: break-all; }
 .board-strip { min-width: 200px; max-width: 280px; }
 .list { display: grid; gap: 10px; }
 .item { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
-.chip { font-family: var(--mono); font-size: 12px; padding: 3px 9px; border: 1px solid var(--line-2); border-radius: 8px; color: var(--muted); background: var(--bg); cursor: pointer; }
+.chip { font-family: var(--mono); font-size: 12.5px; min-height: 34px; display: inline-flex; align-items: center; padding: 5px 12px; border: 1px solid var(--line-2); border-radius: 8px; color: var(--muted); background: var(--bg); cursor: pointer; }
 .chip:hover { border-color: var(--blue-hi); color: var(--text); }
 .chip.on { border-color: var(--blue-hi); color: var(--blue-hi); background: var(--blue-soft); }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
