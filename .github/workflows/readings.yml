@@ -38,8 +38,9 @@ jobs:
 
       - name: Run pipeline
         env:
-          PREV_DIR: prev
-          OUT_DIR: out
+          # Absolute: pnpm --filter runs the script inside apps/pipeline, not the repo root.
+          PREV_DIR: ${{ github.workspace }}/prev
+          OUT_DIR: ${{ github.workspace }}/out
         run: pnpm --filter @assay/pipeline run run
 
       - name: Publish to the data branch (single orphan commit, force-pushed)
