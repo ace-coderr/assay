@@ -2,13 +2,13 @@ import { Link, useParams } from "react-router-dom";
 import { VENUE_LABEL } from "@assay/core";
 import { Strip } from "../components/Strip";
 import { Disclaimer, ErrorBox, Loading, StateBadge } from "../components/bits";
-import { explorer, fmtAge, fmtBps, fmtPrice, fmtUsd, short, useApi, type ActionEvent, type Board, type HistoryPoint, type Reading } from "../lib/api";
+import { findReading } from "@assay/core";
+import { ageOf, explorer, fmtAge, fmtBps, fmtPrice, fmtUsd, short, useData, useNow, type ActionEvent, type Board, type HistoryPoint, type Reading } from "../lib/api";
 
 interface TokenResp {
   reading: Reading;
   history: HistoryPoint[];
   actions: ActionEvent[];
-  ageSec: number;
 }
 
 function Spark({ pts }: { pts: HistoryPoint[] }) {
@@ -31,8 +31,17 @@ function Spark({ pts }: { pts: HistoryPoint[] }) {
 
 export default function Token() {
   const { symbol } = useParams();
-  const board = useApi<Board>(symbol ? null : "/api/board");
-  const { data, error, loading, reload } = useApi<TokenResp>(symbol ? `/api/token/${encodeURIComponent(symbol)}` : null, 30_000);
+  const board = useData<Board>("board.json", 60_000);
+  const now = useNow();
+  // The reading comes from the board (so untracked symbols get an explained state); history and actions from the token file.
+  const found = symbol && board.data ? findReading(board.data, symbol) : undefined;
+  const tracked = !!found && board.data!.readings.some((r) => r.symbol === found.symbol);
+  const extra = useData<TokenResp>(tracked ? `token/${found!.symbol}.json` : null, 60_000);
+  const data: TokenResp | null = found ? { reading: found, history: extra.data?.history ?? [], actions: extra.data?.actions ?? [] } : null;
+  const error = board.error;
+  const loading = board.loading;
+  const reload = board.reload;
+  const notFound = !!symbol && !!board.data && !found;
 
   if (!symbol) {
     return (
@@ -55,12 +64,13 @@ export default function Token() {
       <div className="page-h">
         <div>
           <h1>{r?.symbol ?? symbol}</h1>
-          <p>{r ? "Latest reading with the inputs it was built from." : "Loading the latest reading."}</p>
+          <p>{r ? `Latest reading, taken ${fmtAge(ageOf(r.readAt, now))} ago, with the inputs it was built from.` : notFound ? "No such token." : "Loading the latest reading."}</p>
         </div>
         {r && <StateBadge r={r} />}
       </div>
       {loading && <Loading />}
       {error && <ErrorBox error={error} onRetry={reload} />}
+      {notFound && <div className="banner" role="alert">Unknown symbol &ldquo;{symbol}&rdquo;. It is not in the Tokenized Stocks API list. <Link to="/app/token">Pick a token</Link>.</div>}
       {r && (
         <>
           {r.status !== "ok" ? (
@@ -85,7 +95,7 @@ export default function Token() {
                     <dt>Deviation</dt><dd className={r.state === "Drifting" || r.state === "Broken" ? "coral" : ""}>{fmtBps(r.deviationBps)}</dd>
                     <dt>Multiplier</dt><dd>{r.multiplier}</dd>
                     <dt>Underlying share</dt><dd>${fmtPrice(r.underlyingPrice, 4)}</dd>
-                    <dt>Reference age</dt><dd>{fmtAge(r.referenceAgeSec)} ({r.referenceUpdatedAt})</dd>
+                    <dt>Reference age</dt><dd>{fmtAge(ageOf(r.referenceUpdatedAt, now))} ({r.referenceUpdatedAt})</dd>
                     <dt>30m TWAP</dt><dd>{r.poolUsed?.twapPrice ? `$${fmtPrice(r.poolUsed.twapPrice, 4)}` : "not available for this pool"}</dd>
                     <dt>Block</dt><dd>{r.block}</dd>
                   </dl>

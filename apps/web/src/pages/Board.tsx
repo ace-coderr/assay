@@ -1,27 +1,30 @@
 import { Link } from "react-router-dom";
+import { BOARD_LATE_SEC } from "@assay/core";
 import { Strip } from "../components/Strip";
 import { Disclaimer, ErrorBox, Loading, StateBadge } from "../components/bits";
-import { fmtAge, fmtBps, fmtPrice, fmtUsd, useApi, type Board as BoardT } from "../lib/api";
+import { ageOf, fmtAge, fmtBps, fmtPrice, fmtUsd, useData, useNow, type Board as BoardT } from "../lib/api";
 
 const ORDER: Record<string, number> = { Broken: 0, Drifting: 1, Stale: 2, Fresh: 3 };
 
 export default function Board() {
-  const { data, error, loading, reload } = useApi<BoardT>("/api/board", 30_000);
+  const { data, error, loading, reload } = useData<BoardT>("board.json", 60_000);
+  const now = useNow();
+  const age = ageOf(data?.updatedAt, now);
   const rows = (data?.readings ?? []).slice().sort((a, b) => {
     const ra = a.status === "ok" ? ORDER[a.state!] ?? 4 : 5;
     const rb = b.status === "ok" ? ORDER[b.state!] ?? 4 : 5;
     return ra - rb || a.symbol.localeCompare(b.symbol);
   });
-  const stale = data && data.ageSec > 900;
+  const late = age != null && age > BOARD_LATE_SEC;
   const degraded = data && (!data.sources.tokensApi.ok || !data.sources.rpc.ok);
   return (
     <>
       <div className="page-h">
         <div>
           <h1>Board</h1>
-          <p>Every token that has a published reference value, read against its deepest qualifying pool. Updated every 5 minutes.</p>
+          <p>Every token that has a published reference value, read against its deepest qualifying pool. Readings are produced every 10 minutes by a GitHub Actions schedule, which can run late, so check the age.</p>
         </div>
-        {data && <span className="muted mono" style={{ fontSize: 12.5 }}>updated {fmtAge(data.ageSec)} ago · block {Number(data.block ?? 0).toLocaleString("en-US")}</span>}
+        {data && <span className="muted mono" style={{ fontSize: 12.5 }}>read {fmtAge(age)} ago · block {Number(data.block ?? 0).toLocaleString("en-US")}</span>}
       </div>
 
       {error && <ErrorBox error={error} onRetry={reload} />}
@@ -32,7 +35,11 @@ export default function Board() {
           The readings below are the last known ones and are not being refreshed.
         </div>
       )}
-      {stale && !degraded && <div className="banner">The latest reading is {fmtAge(data!.ageSec)} old. The scheduled refresh may be late.</div>}
+      {late && !degraded && (
+        <div className="banner" role="status">
+          The newest reading is {fmtAge(age)} old. Readings are scheduled every 10 minutes and GitHub can run the schedule late; treat prices below as that old.
+        </div>
+      )}
       {loading && <Loading rows={6} />}
 
       {data && (
@@ -67,7 +74,7 @@ export default function Board() {
                       <td className="board-strip"><Strip deviationBps={r.deviationBps} state={r.state} label={r.symbol} /></td>
                       <td className="num">{fmtUsd(r.poolUsed?.usdcDepth)}</td>
                       <td className="num">{r.poolUsed?.costToMove100bpsUsd != null ? `${r.poolUsed.costRangeLimited ? "≥ " : ""}${fmtUsd(r.poolUsed.costToMove100bpsUsd)}` : "n/a"}</td>
-                      <td className="num">{fmtAge(r.referenceAgeSec)}</td>
+                      <td className="num">{fmtAge(ageOf(r.referenceUpdatedAt, now))}</td>
                     </>
                   ) : (
                     <td colSpan={7} className="muted" style={{ fontSize: 13 }}>

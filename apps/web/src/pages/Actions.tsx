@@ -1,43 +1,31 @@
 import { useState } from "react";
 import { Disclaimer, ErrorBox, Loading } from "../components/bits";
-import { explorerTx, short, useApi, type ActionEvent } from "../lib/api";
+import { explorerTx, short, useData, type ActionEvent } from "../lib/api";
+
+type Detail = { status: "ok"; record: unknown; fetchedAt: string } | { status: "unavailable"; reason: string; fetchedAt: string };
 
 interface Resp {
   actions: ActionEvent[];
+  details: Record<string, Detail>;
   note: string;
   cursor: { block: string; head: string } | null;
   scanError: { at: string; error: string } | null;
 }
 
-function Detail({ id }: { id: string }) {
-  const [state, setState] = useState<{ loading: boolean; body?: string; error?: string }>({ loading: false });
+function IssuerRecord({ id, detail }: { id: string; detail?: Detail }) {
+  const [open, setOpen] = useState(false);
+  if (!detail) return <p className="dim" style={{ fontSize: 13, margin: "8px 0 0" }}>Issuer record not fetched yet; the next scheduled run will try.</p>;
+  if (detail.status === "unavailable") return <p className="coral" style={{ fontSize: 13, margin: "8px 0 0" }}>Issuer record unavailable: {detail.reason}.</p>;
   return (
     <div style={{ marginTop: 8 }}>
-      <button
-        className="btn small"
-        disabled={state.loading}
-        onClick={async () => {
-          setState({ loading: true });
-          try {
-            const res = await fetch(`/api/actions/${id}`);
-            const j = JSON.parse(await res.text());
-            if (!res.ok || j.status === "unavailable") setState({ loading: false, error: `Issuer record unavailable: ${j.reason ?? `HTTP ${res.status}`}` });
-            else setState({ loading: false, body: JSON.stringify(j, null, 2) });
-          } catch (e) {
-            setState({ loading: false, error: e instanceof Error ? e.message : "failed" });
-          }
-        }}
-      >
-        {state.loading ? "Loading…" : "Load issuer record"}
-      </button>
-      {state.error && <p className="coral" style={{ fontSize: 13 }}>{state.error}</p>}
-      {state.body && <pre style={{ marginTop: 8 }}>{state.body}</pre>}
+      <button className="btn small" aria-expanded={open} onClick={() => setOpen((o) => !o)}>{open ? "Hide issuer record" : "Show issuer record"}</button>
+      {open && <pre style={{ marginTop: 8 }} aria-label={`Issuer record ${id}`}>{JSON.stringify(detail.record, null, 2)}</pre>}
     </div>
   );
 }
 
 export default function Actions() {
-  const { data, error, loading, reload } = useApi<Resp>("/api/actions", 60_000);
+  const { data, error, loading, reload } = useData<Resp>("actions.json", 120_000);
   const scanned = data?.cursor ? Number(data.cursor.block) : null;
   const head = data?.cursor ? Number(data.cursor.head) : null;
   return (
@@ -45,7 +33,7 @@ export default function Actions() {
       <div className="page-h">
         <div>
           <h1>Corporate actions</h1>
-          <p>Splits, dividends and other events change a token's multiplier. Assay watches the onchain announcements and flags any multiplier change between readings, because a price comparison is not valid while one is in progress.</p>
+          <p>Splits, dividends and other events change a token&rsquo;s multiplier. Assay watches the onchain announcements and flags any multiplier change between readings, because a price comparison is not valid while one is in progress.</p>
         </div>
       </div>
       {loading && <Loading />}
@@ -79,7 +67,7 @@ export default function Actions() {
                       multiplier {a.old} → {a.new}{a.effectiveAt ? ` · effective ${a.effectiveAt}` : ""}
                     </p>
                   )}
-                  {a.actionId && <Detail id={a.actionId} />}
+                  {a.actionId && <IssuerRecord id={a.actionId} detail={data.details?.[a.actionId]} />}
                 </div>
               ))}
             </div>

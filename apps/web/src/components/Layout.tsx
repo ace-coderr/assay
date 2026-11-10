@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
-import { fmtAge, useApi, type Status } from "../lib/api";
+import { BOARD_LATE_SEC } from "@assay/core";
+import { ageOf, DATA_URL, fmtAge, useData, useNow, type Status } from "../lib/api";
 import { DISCLAIMER_TEXT } from "./bits";
 
 export const MODULES = [
@@ -54,19 +55,16 @@ export function TopNav() {
 }
 
 export function Footer() {
-  const { data, error } = useApi<Status>("/api/status", 30_000);
-  const [, tick] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => tick((x) => x + 1), 15_000);
-    return () => clearInterval(id);
-  }, []);
-  const age = data?.updatedAt ? (Date.now() - Date.parse(data.updatedAt)) / 1000 : null;
-  const ok = !!data && !!data.sources?.tokensApi.ok && !!data.sources?.rpc.ok;
+  const { data, error } = useData<Status>("status.json", 60_000);
+  const now = useNow();
+  const age = ageOf(data?.updatedAt, now);
+  const late = age != null && age > BOARD_LATE_SEC;
+  const ok = !!data && !!data.sources?.tokensApi.ok && !!data.sources?.rpc.ok && !late;
   return (
     <footer className="footer">
       <div className="wrap">
         <div className="footer-live" aria-live="polite">
-          <span><span className={`live-dot ${ok ? "" : "off"}`} /> <b>{error ? "status unavailable" : data ? (ok ? "live" : "source degraded") : "checking"}</b></span>
+          <span><span className={`live-dot ${ok ? "" : "off"}`} /> <b>{error ? "status unavailable" : data ? (ok ? "live" : late ? "readings late" : "source degraded") : "checking"}</b></span>
           <span>network: <b>Base mainnet (8453)</b></span>
           <span>data: <b>Coinbase Tokenized Stocks API + Base RPC</b></span>
           <span>last reading: <b>{age == null ? "n/a" : `${fmtAge(age)} ago`}</b></span>
@@ -93,7 +91,7 @@ export function Footer() {
             <h4>Open</h4>
             <ul>
               <li><a href="https://github.com/ace-coderr/assay" target="_blank" rel="noreferrer">Source (MIT)</a></li>
-              <li><a href="/api/feed.xml">RSS feed</a></li>
+              <li><a href={`${DATA_URL}/feed.xml`}>RSS feed</a></li>
               <li><Link to="/app/status">Build status</Link></li>
             </ul>
           </div>

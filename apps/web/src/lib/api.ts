@@ -6,7 +6,8 @@ export type { Reading };
 export interface SourceStatus { ok: boolean; at: string; error?: string }
 export interface Board {
   updatedAt: string;
-  ageSec: number;
+  generatedAt?: string;
+  untrackedTokens?: { symbol: string; multiplier: number }[];
   block?: string;
   sources: { tokensApi: SourceStatus; rpc: SourceStatus };
   untracked: number;
@@ -16,7 +17,8 @@ export interface Board {
 }
 export interface Status {
   updatedAt: string | null;
-  ageSec: number | null;
+  generatedAt?: string;
+  cadenceMin?: number;
   block: string | null;
   network: string;
   sources: Board["sources"] | null;
@@ -77,7 +79,31 @@ export function useApi<T>(path: string | null, refreshMs = 0): Result<T> {
   return { data, error, loading, reload: load, fetchedAt };
 }
 
-export const MCP_URL = () => `${location.origin}/mcp`;
+/**
+ * Where the pipeline publishes JSON: the orphan `data` branch, served by raw.githubusercontent.com
+ * (CORS: *, cached ~5 minutes). Override with VITE_DATA_URL for local testing.
+ */
+export const DATA_URL: string = (import.meta.env.VITE_DATA_URL as string | undefined) ?? "https://raw.githubusercontent.com/ace-coderr/assay/data";
+export const REPO_URL = "https://github.com/ace-coderr/assay";
+export const SITE_URL = "https://ace-coderr.github.io/assay/";
+
+/** Fetch a published JSON file, e.g. useData("board.json"). Errors are surfaced; nothing is substituted. */
+export function useData<T>(file: string | null, refreshMs = 0): Result<T> {
+  return useApi<T>(file ? `${DATA_URL}/${file}` : null, refreshMs);
+}
+
+/** Re-renders every `everyMs` so ages ("read 4m ago") stay true while the page is open. */
+export function useNow(everyMs = 15_000): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), everyMs);
+    return () => clearInterval(id);
+  }, [everyMs]);
+  return now;
+}
+
+/** Seconds since an ISO timestamp, or null if unknown. */
+export const ageOf = (iso: string | null | undefined, now = Date.now()): number | null => (iso ? (now - Date.parse(iso)) / 1000 : null);
 
 export function fmtPrice(n: number | undefined | null, d = 2): string {
   return n == null || !Number.isFinite(n) ? "n/a" : n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });

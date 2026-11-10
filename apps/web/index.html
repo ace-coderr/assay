@@ -4,6 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0A0B0D" />
+    <!-- GitHub Pages cannot set response headers, so the policy is a meta tag. connect-src lists exactly the hosts the app reads. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://raw.githubusercontent.com https://api.github.com https://base-rpc.publicnode.com https://mainnet.base.org https://base-sepolia-rpc.publicnode.com; base-uri 'self'; form-action 'none'; object-src 'none'" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="description" content="Assay is a read-only integrity layer for tokenized stocks on Base: onchain price vs reference value, multiplier-aware. Not financial advice." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Assay: integrity layer for tokenized stocks on Base</title>

@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { Strip } from "../components/Strip";
 import { Disclaimer, Reveal, SectionPill, StateBadge } from "../components/bits";
-import { fmtAge, fmtBps, fmtPrice, useApi, type Board } from "../lib/api";
+import { ageOf, fmtAge, fmtBps, fmtPrice, useData, useNow, type Board } from "../lib/api";
 
 function ReadingConsole() {
-  const { data, error, loading } = useApi<Board>("/api/board", 30_000);
+  const { data, error, loading } = useData<Board>("board.json", 60_000);
+  const now = useNow();
   const ok = data?.readings.filter((r) => r.status === "ok") ?? [];
   const r = ok.find((x) => x.symbol === "AAPLc") ?? ok[0];
   const raw = r
@@ -40,7 +41,7 @@ function ReadingConsole() {
             <div className="console-title">
               <b>{r ? r.symbol : "no reading"}</b>
               {r && <StateBadge r={r} />}
-              {r && <span className="muted mono" style={{ fontSize: 12 }}>read {fmtAge((Date.now() - Date.parse(r.readAt)) / 1000)} ago</span>}
+              {r && <span className="muted mono" style={{ fontSize: 12 }}>read {fmtAge(ageOf(r.readAt, now))} ago</span>}
             </div>
             <Strip deviationBps={r?.deviationBps} state={r?.state} label={r?.symbol} />
             {r && (
@@ -179,12 +180,12 @@ export default function Landing() {
                 <b>Runs today</b>
                 <ul>
                   {[
-                    "Readings every 5 minutes on Netlify, stored with history",
+                    "Readings every 10 minutes by a GitHub Actions schedule (best-effort: each reading shows its real age), with 7 days of history",
                     "Reference values for 12 tokens, matched to the Chainlink feeds",
                     "Uniswap v3, Aerodrome v2 and Aerodrome Slipstream USDC pools, with depth, TWAP and manipulation-cost guards",
                     "Probe sizes simulated tick by tick, checked against Uniswap's own quoter",
-                    "Public read-only API, RSS feed, signed webhooks",
-                    "Remote MCP server with five read-only tools",
+                    "Public read-only JSON on a GitHub branch, and an RSS feed",
+                    "A local MCP server you run yourself, with five read-only tools",
                     "Reproduce any reading from a public RPC in your browser",
                   ].map((t) => (<li key={t}><span className="tick yes" aria-hidden="true">✓</span>{t}</li>))}
                 </ul>
@@ -198,6 +199,7 @@ export default function Landing() {
                     "Uniswap v4 pools and pools quoted in ETH, cbBTC or other assets (checked, but far shallower than the Aerodrome USDC pools)",
                     "Trades beyond about 3% of the price: reported as an 'at least' value",
                     "Mainnet attestations: Base Sepolia testnet only",
+                    "A hosted MCP endpoint or webhooks: a static site cannot host them, so MCP runs locally",
                   ].map((t) => (<li key={t}><span className="tick no" aria-hidden="true">×</span>{t}</li>))}
                 </ul>
               </div>

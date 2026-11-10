@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import "./styles.css";
 import { AppShell, PageShell } from "./components/Layout";
 import Landing from "./pages/Landing";
@@ -18,14 +18,14 @@ function NotFound() {
   return (
     <div className="wrap" style={{ paddingTop: 80 }}>
       <h1>Page not found</h1>
-      <p className="muted">That page does not exist. <a href="/app">Go to the board</a>.</p>
+      <p className="muted">That page does not exist. <a href="#/app">Go to the board</a>.</p>
     </div>
   );
 }
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<PageShell />}>
           <Route index element={<Landing />} />
@@ -44,6 +44,6 @@ createRoot(document.getElementById("root")!).render(
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>,
 );

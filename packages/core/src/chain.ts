@@ -23,7 +23,10 @@ export const FEE_TIERS = [100, 500, 3000, 10000] as const;
 export const DEFAULT_RPCS = ["https://base-rpc.publicnode.com", "https://mainnet.base.org"];
 
 export function makeClient(rpcUrl?: string): PublicClient {
-  const urls = rpcUrl ?? process.env.BASE_RPC_URL ? [rpcUrl ?? process.env.BASE_RPC_URL!, ...DEFAULT_RPCS] : DEFAULT_RPCS;
+  // `process` does not exist in the browser, where the public RPCs are used directly.
+  const envUrl = typeof process !== "undefined" ? process.env?.BASE_RPC_URL : undefined;
+  const custom = rpcUrl ?? envUrl;
+  const urls = custom ? [custom, ...DEFAULT_RPCS] : DEFAULT_RPCS;
   return createPublicClient({
     chain: base,
     transport: fallback(urls.map((u) => http(u, { timeout: 12_000, retryCount: 1 }))),

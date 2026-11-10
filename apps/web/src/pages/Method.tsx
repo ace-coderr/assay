@@ -4,7 +4,7 @@ import { createPublicClient, http, parseAbi, fallback } from "viem";
 import { base } from "viem/chains";
 import { isConcentrated, v3Price, type PoolRead } from "@assay/core";
 import { Disclaimer, ErrorBox } from "../components/bits";
-import { fmtBps, fmtPrice, useApi, type Board, type Status } from "../lib/api";
+import { fmtBps, fmtPrice, useData, type Board, type Status } from "../lib/api";
 
 const POOL_ABI = parseAbi([
   "function slot0() view returns (uint160 sqrtPriceX96,int24 tick)",
@@ -15,8 +15,8 @@ interface Repro { onchain: number; stored: number; diffBps: number; liquidity: s
 
 export default function Method() {
   const [sp] = useSearchParams();
-  const board = useApi<Board>("/api/board");
-  const status = useApi<Status>("/api/status");
+  const board = useData<Board>("board.json");
+  const status = useData<Status>("status.json");
   const ok = board.data?.readings.filter((r) => r.status === "ok") ?? [];
   const [symbol, setSymbol] = useState(sp.get("symbol") ?? "");
   const [res, setRes] = useState<Repro | null>(null);
