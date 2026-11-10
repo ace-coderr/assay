@@ -1,4 +1,4 @@
-import { quoteImpact, verdictFor, DISCLAIMER, THRESHOLDS, type PoolRead, type Reading, type Verdict, type ImpactQuote } from "@assay/core";
+import { isConcentrated, quoteImpact, verdictFor, DISCLAIMER, THRESHOLDS, type PoolRead, type Reading, type Verdict, type ImpactQuote } from "@assay/core";
 import type { ActionEvent, HistoryPoint, LatestDoc, StateEvent, Store } from "./store.js";
 
 /** Read-side service shared by the HTTP API and the MCP server. Nothing here can write chain state or trade. */
@@ -87,7 +87,7 @@ export function probe(doc: LatestDoc | null, symbol: string, usd: number, side: 
       ? "At least: this size is larger than the liquidity at the pool's current price range, so the trade would move through further price ranges and the true cost is higher than shown. Assay does not simulate those ranges."
       : "Estimate within the pool's current price range, fee included.",
     method:
-      pool.venue === "uniswap-v3"
+      isConcentrated(pool.venue)
         ? "Constant-liquidity estimate within the pool's current price range, fee included."
         : "Constant-product (x*y=k) estimate with a 0.30% fee.",
     rejectedPools: reading.poolsRejected,
