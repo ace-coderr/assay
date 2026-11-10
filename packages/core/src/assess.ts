@@ -1,6 +1,6 @@
 import { THRESHOLDS as T } from "./thresholds.js";
 import { bps, deviationBps } from "./math.js";
-import type { PoolRead, Reading, State, TokenRef } from "./types.js";
+import { isConcentrated, type PoolRead, type Reading, type State, type TokenRef } from "./types.js";
 
 export interface PoolVerdict {
   ok: boolean;
@@ -9,7 +9,7 @@ export interface PoolVerdict {
 
 /** Depth/sanity guard: decides whether a pool's spot price may be used at all. */
 export function vetPool(p: PoolRead): PoolVerdict {
-  if (p.venue === "uniswap-v3" && (p.liquidity ?? 0n) === 0n) {
+  if (isConcentrated(p.venue) && (p.liquidity ?? 0n) === 0n) {
     return { ok: false, why: "zero in-range liquidity (spot price is meaningless)" };
   }
   if (!Number.isFinite(p.spotPrice) || p.spotPrice <= 0) return { ok: false, why: "non-finite price" };

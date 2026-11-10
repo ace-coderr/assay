@@ -181,7 +181,8 @@ export default function Landing() {
                   {[
                     "Readings every 5 minutes on Netlify, stored with history",
                     "Reference values for 12 tokens, matched to the Chainlink feeds",
-                    "Uniswap v3 and Aerodrome v2 USDC pools, with depth and TWAP guards",
+                    "Uniswap v3, Aerodrome v2 and Aerodrome Slipstream USDC pools, with depth, TWAP and manipulation-cost guards",
+                    "Probe sizes simulated tick by tick, checked against Uniswap's own quoter",
                     "Public read-only API, RSS feed, signed webhooks",
                     "Remote MCP server with five read-only tools",
                     "Reproduce any reading from a public RPC in your browser",
@@ -194,9 +195,8 @@ export default function Landing() {
                   {[
                     "Anything that trades, swaps, signs or holds funds",
                     "The other 306 tokens: the API publishes no reference value for them, so they cannot be assayed",
-                    "CRCLc and INTCc: a reference exists but no USDC pool was found",
-                    "Uniswap v4 and concentrated Aerodrome pools",
-                    "Multi-tick swap simulation: large sizes are reported as 'at least'",
+                    "Uniswap v4 pools and pools quoted in ETH, cbBTC or other assets (checked, but far shallower than the Aerodrome USDC pools)",
+                    "Trades beyond about 3% of the price: reported as an 'at least' value",
                     "Mainnet attestations: Base Sepolia testnet only",
                   ].map((t) => (<li key={t}><span className="tick no" aria-hidden="true">×</span>{t}</li>))}
                 </ul>

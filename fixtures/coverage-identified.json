@@ -1,0 +1,97 @@
+{
+  "checkedAt": "2026-11-10T19:26:01.274Z",
+  "CRCLc": [
+    {
+      "pool": "0x294666ad6a415e8c33af801225c04079bb4f1133",
+      "transfers": 3672,
+      "factory": "0x9CB220581b91b0C83223012FE69688b92aD07a76",
+      "fee": 500,
+      "tickSpacing": 10,
+      "liquidity": "24637782534",
+      "token0": "USDC",
+      "token1": "CRCLc",
+      "bal0": 106753.209098,
+      "bal1": 1678.03088673,
+      "slot0": {
+        "sqrtPriceX96": "98873563267786599722071367878",
+        "tick": 4430
+      },
+      "reserves": null
+    },
+    {
+      "pool": "0x5425d79964c2e12138666aa3941a8c0a81681c57",
+      "transfers": 26,
+      "factory": null,
+      "fee": null,
+      "tickSpacing": null,
+      "liquidity": null,
+      "token0": "USDC",
+      "token1": "CRCLc",
+      "bal0": 5.190649,
+      "bal1": 0.0773979,
+      "slot0": null,
+      "reserves": null
+    }
+  ],
+  "INTCc": [
+    {
+      "pool": "0x3d384288fa79b51de882b06b617ab7989ccad4f3",
+      "transfers": 4212,
+      "factory": "0x9CB220581b91b0C83223012FE69688b92aD07a76",
+      "fee": 500,
+      "tickSpacing": 10,
+      "liquidity": "224256887310",
+      "token0": "USDC",
+      "token1": "INTCc",
+      "bal0": 111523.301059,
+      "bal1": 1910.76375514,
+      "slot0": {
+        "sqrtPriceX96": "104468801584373362142650302464",
+        "tick": 5531
+      },
+      "reserves": null
+    },
+    {
+      "pool": "0xd0397e2bde06a943dd54da05fa73d92ea60bd69b",
+      "transfers": 63,
+      "factory": null,
+      "fee": null,
+      "tickSpacing": null,
+      "liquidity": null,
+      "token0": "USDC",
+      "token1": "INTCc",
+      "bal0": 17.378143,
+      "bal1": 0.31658817,
+      "slot0": null,
+      "reserves": null
+    },
+    {
+      "pool": "0x2b02014311bb5efa99ede2ebaf0cc1fecc0cea13",
+      "transfers": 2,
+      "factory": "0x705A3168F2c48263B1249A11940E6602A4f22a9A",
+      "fee": null,
+      "tickSpacing": null,
+      "liquidity": null,
+      "token0": "USDC",
+      "token1": "INTCc",
+      "bal0": 0,
+      "bal1": 0,
+      "slot0": null,
+      "reserves": null
+    },
+    {
+      "pool": "0x235ba98099a134c46d245c1b4c1bc52589f92a79",
+      "transfers": 7,
+      "factory": "0x9476284d81121613DA5DF5C72f50853a455448F1",
+      "fee": null,
+      "tickSpacing": null,
+      "liquidity": null,
+      "token0": "null",
+      "token1": "null",
+      "bal0": null,
+      "bal1": null,
+      "slot0": null,
+      "reserves": null
+    }
+  ]
+}

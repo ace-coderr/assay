@@ -1,0 +1,1296 @@
+{
+  "capturedAt": "2026-11-10T19:27:11.679Z",
+  "note": "discovery only, not a price source",
+  "tokens": {
+    "TSLAc": [
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x342af3dc58e331704cd79b187098e43cc7bf76b7938e3bf63aa1b2f3b2d9e965",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "376.75",
+        "liquidityUsd": 32821.65,
+        "volume24h": 8582.02
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x53923698aed2fa7c609736c96dad26625270421f57af19b1c81b69865d46c55a",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "377.43",
+        "liquidityUsd": 1046.74,
+        "volume24h": 153.61
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x4fc072efd5b059d74c88fac31fc0c8ea17a16e7c3fd7b888ac891c02d8c7389d",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "375.14",
+        "liquidityUsd": 99.75,
+        "volume24h": 1.85
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x7A33000372f3F028f074182CCb9d16cBEEfBF920",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "377.82",
+        "liquidityUsd": 445633.78,
+        "volume24h": 7722810.02
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x469337fDcc5E8f38e2E4B670B04F57865D13a7BB",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "377.91",
+        "liquidityUsd": 33639.94,
+        "volume24h": 25447.35
+      },
+      {
+        "dexId": "equalizer",
+        "labels": [],
+        "pair": "0x519974ceBa3437aB1cEd0B77570CA65A25A9AB78",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "372.51",
+        "liquidityUsd": 20.47,
+        "volume24h": 0.1
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x5933de39c3d6962af871b61f9d51123ebe361497bd1dc25f12354d289c39ec98",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "180.39",
+        "liquidityUsd": null,
+        "volume24h": 0.66
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x3d0e25c2a2304e6d49643bee4f5cede18fa02e355e9f432ca8c7cedf208d1346",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "387.18",
+        "liquidityUsd": null,
+        "volume24h": 0.37
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xa8a821935114fa692fd277f3a02d7c907f24accbe6b6a7789f29213f2e07f303",
+        "quote": "TSLAc",
+        "quoteAddr": "0xb2000000000000000000001e800a7f5189430cD0",
+        "priceUsd": "0.06431",
+        "liquidityUsd": 79.13,
+        "volume24h": 0.83
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x937531455521AAA0709B0aE57EA5ac88F2eB8218",
+        "quote": "TSLAc",
+        "quoteAddr": "0xb2000000000000000000001e800a7f5189430cD0",
+        "priceUsd": "2392.77",
+        "liquidityUsd": 6819.72,
+        "volume24h": 2638.09
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x414545f102fd41effa3afeb93910ead82259ed1e88139a259b55a5c882be1d25",
+        "quote": "TSLAc",
+        "quoteAddr": "0xb2000000000000000000001e800a7f5189430cD0",
+        "priceUsd": "0.0001062",
+        "liquidityUsd": null,
+        "volume24h": 0
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xbf3f4a64d8e4301b59e597d96712001568188e8b6e49315629fc896a611190d9",
+        "quote": "TSLAc",
+        "quoteAddr": "0xb2000000000000000000001e800a7f5189430cD0",
+        "priceUsd": "0.000005526",
+        "liquidityUsd": 500.57,
+        "volume24h": 2.06
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x270cc9d338Aa4eB21dA0ba84F4422e56921E3d18",
+        "quote": "TSLAc",
+        "quoteAddr": "0xb2000000000000000000001e800a7f5189430cD0",
+        "priceUsd": "0.000003963",
+        "liquidityUsd": 3963.13,
+        "volume24h": 4.21
+      }
+    ],
+    "GOOGLc": [
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x16c70F04C3080a127486Cdf5a4C33c066bBF47C3",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "287.37",
+        "liquidityUsd": 1777545.62,
+        "volume24h": 9248620.38
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0xB1987CAD1682841b4b641d50E520777eC5Ab5542",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "287.38",
+        "liquidityUsd": 213494.73,
+        "volume24h": 30840.73
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x0cABC1f570FC7E80aF454b5bC839b4014B4AcFd1",
+        "quote": "WETH",
+        "quoteAddr": "0x4200000000000000000000000000000000000006",
+        "priceUsd": "287.56",
+        "liquidityUsd": 66957.36,
+        "volume24h": 471896.19
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x5dfc32bfb5ec664a8be2844a1e564847e34f210d7f820d500312f85ab47e9ff9",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "286.98",
+        "liquidityUsd": 32857.18,
+        "volume24h": 9175.58
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v3"
+        ],
+        "pair": "0x1f52F46BaC657564c31122b12b43A459E09273C8",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "288.82",
+        "liquidityUsd": 29924.45,
+        "volume24h": 3064.7
+      },
+      {
+        "dexId": "pancakeswap",
+        "labels": [],
+        "pair": "0x69dec50977fC57eCEcA472105c26F188FF2012ec",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "287.32",
+        "liquidityUsd": 11065.11,
+        "volume24h": 7977.84
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v3"
+        ],
+        "pair": "0x8634EE4145A63E40E44e12A6Bb1B905Fcb8856a6",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "286.99",
+        "liquidityUsd": 13085.51,
+        "volume24h": 2285.73
+      },
+      {
+        "dexId": "nami",
+        "labels": [],
+        "pair": "0x00BaeedB7F9e7C990Af09FC882cF92778F652444",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "287.23",
+        "liquidityUsd": 8348.09,
+        "volume24h": 67718.68
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x25F63549b2Bb9ffF114cDc39e8cfb16B450E2f9b",
+        "quote": "WETH",
+        "quoteAddr": "0x4200000000000000000000000000000000000006",
+        "priceUsd": "287.49",
+        "liquidityUsd": 4276.28,
+        "volume24h": 14316.04
+      },
+      {
+        "dexId": "solidlycom",
+        "labels": [],
+        "pair": "0x82D87A572Af2672aE6105664E4Af1d1499A41F51",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "287.22",
+        "liquidityUsd": 7711.28,
+        "volume24h": 2158.68
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xe87a417958bf5a93d523470981eb10e610998dbac113792088680afc54473f91",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "275.24",
+        "liquidityUsd": 4751.15,
+        "volume24h": 567.08
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xb9d74746709d4fc11879097476c4a2d4def0eb5f277ffd3887b4444bff8056b0",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "286.76",
+        "liquidityUsd": 986.01,
+        "volume24h": 168.53
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x6c6d2723bff45647b74932218ca10422f472bcfb626d31545c7ceb68b4e580bb",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "287.29",
+        "liquidityUsd": 166.79,
+        "volume24h": 10
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x735481df7daf09329b7eef032fba1d284362c91d3271a147869c805d029a2e13",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "286.63",
+        "liquidityUsd": 133.82,
+        "volume24h": 44.72
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xc8d9aaba82bd4e42f10d05d5e0f6afe896fcba9dd11875c7f86727c689728691",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "286.25",
+        "liquidityUsd": 14.44,
+        "volume24h": 2.47
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xb1fa2a9c7395f39301df2efde05565dfc95fc372605860840a9d501ed4660121",
+        "quote": "NVDAc",
+        "quoteAddr": "0xb20000000000000000000078ee7ce2fE4908108C",
+        "priceUsd": "276.96",
+        "liquidityUsd": 13.19,
+        "volume24h": 0.7
+      },
+      {
+        "dexId": "hydrex",
+        "labels": [
+          "CLAMM"
+        ],
+        "pair": "0x0d1518a9b2243F034a119A629B8F5170D59965b3",
+        "quote": "WETH",
+        "quoteAddr": "0x4200000000000000000000000000000000000006",
+        "priceUsd": "285.66",
+        "liquidityUsd": 21.57,
+        "volume24h": 0.23
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xae51c0fcb0f1efeda60f4121f66b2302952c46d2e9bb22beb134fe6c618be9ed",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "17.38",
+        "liquidityUsd": 34836.47,
+        "volume24h": 673.54
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xcd1ecf27dbcc33c55a9f32dee824e6e35f2e60a4174bc1d324c9b238a0909179",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "101.89",
+        "liquidityUsd": 17429.74,
+        "volume24h": 3484.79
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x69bbadafdb28b6952c2910bed1d49fb1b11a222cbf36143fc1aca3c26b35c28e",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.00003261",
+        "liquidityUsd": 17597,
+        "volume24h": 566.58
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x44acda02fdfc8ecaace6fefd1c77b1c0b981ab92f10c00619b0ec5fdb74ccd3b",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.0000002339",
+        "liquidityUsd": 23735.59,
+        "volume24h": 3.2
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xdef4ee81924e318ca8914e73cf5f9e69686c9c2cdb8b6eaba2e30a1c5c5c9baa",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.0000002034",
+        "liquidityUsd": 20296.86,
+        "volume24h": 6.01
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0xdB3F4aB8225Ff86d5574fb87b2CaD86a7DF7DcBf",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "100.93",
+        "liquidityUsd": 222.42,
+        "volume24h": 29.42
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x76f67310e5d6227702fed15d09afb86235bebc706db077a89cdaea4afa8d64b1",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.00001427",
+        "liquidityUsd": 598.69,
+        "volume24h": 11.22
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xc5c5e4dc3414f23859c1326dc8a345593d86797df38b1f60b63640d86a576ebc",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.000005403",
+        "liquidityUsd": 1080.62,
+        "volume24h": 13.41
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xde81f6cd224d3a39fc621809bee10a994962567470c670c9c4841b8802ca1f7b",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.000003430",
+        "liquidityUsd": 3327.35,
+        "volume24h": 87.24
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xc50baddad0c16e7866838542e365b1545983abbe3fbe2640e2b767f6b4170ee9",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.0001022",
+        "liquidityUsd": 102238.33,
+        "volume24h": 0.01
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x5e7Fe8ADAEFAb50B51D806767F33b1D15cCf4201",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.9993",
+        "liquidityUsd": 528.13,
+        "volume24h": 1186.79
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x2fa2510ebb06a7d7d4cefc69b7a0b725c801dbe7b38a1721f88e04f9131724bd",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.0000009807",
+        "liquidityUsd": 27.41,
+        "volume24h": 0.14
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x5a16a634ad2a21c26eb3b88c2d86a3f361a4dea307385176d3ff289a5fc97d98",
+        "quote": "GOOGLc",
+        "quoteAddr": "0xb2000000000000000000002D0BA3164cc74f58B7",
+        "priceUsd": "0.0000000000000000000000006512",
+        "liquidityUsd": 39.29,
+        "volume24h": 987.68
+      }
+    ],
+    "SNDKc": [
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x2836e062a3fe75943a7F4A552E2365b98E414E75",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "846.90",
+        "liquidityUsd": 1544781.8,
+        "volume24h": 37784978.01
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x5A8236f575471e7BfCA2C8462a200c28f737246E",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "846.70",
+        "liquidityUsd": 52624.72,
+        "volume24h": 136659.36
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xd8f0e90ba2c1437041a1a2e99fc723a608bd5638de173996566296fee1a08ea4",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "848.82",
+        "liquidityUsd": 9572.97,
+        "volume24h": 6478.4
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x7769cc517e6da67c9ed56f040c00d8c661a2e0428c34c152a2517643225189e3",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "850.85",
+        "liquidityUsd": 972.74,
+        "volume24h": 670.24
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v3"
+        ],
+        "pair": "0x26fa54cdfc64fAacb5364c09De7Ac2F72308052D",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "843.059",
+        "liquidityUsd": 77.28,
+        "volume24h": 18.9
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v3"
+        ],
+        "pair": "0x05ec128b2480d90973AB113F027B189dfFf651ED",
+        "quote": "cbBTC",
+        "quoteAddr": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+        "priceUsd": "845.65",
+        "liquidityUsd": 20.14,
+        "volume24h": 3.84
+      },
+      {
+        "dexId": "equalizer",
+        "labels": [],
+        "pair": "0x507b27040e73D67B72Bb6620A4feD123CD866c8a",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "857.78",
+        "liquidityUsd": 13.85,
+        "volume24h": 0.18
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x74c9ccbe6be8df9b82fcc75a5e7d4eb1e6c427e6f9b734ebccfcbcdb624d587d",
+        "quote": "SNDKc",
+        "quoteAddr": "0xb200000000000000000000397293Cb8cda9a10c5",
+        "priceUsd": "0.00001350",
+        "liquidityUsd": 13535.23,
+        "volume24h": 84.55
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x8cd68a6bc2a926550deb3e29e5ce8f23d6b4fb72b38dab8affa9e9dc44ac922a",
+        "quote": "SNDKc",
+        "quoteAddr": "0xb200000000000000000000397293Cb8cda9a10c5",
+        "priceUsd": "0.06614",
+        "liquidityUsd": 55.59,
+        "volume24h": 0.19
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xfb26f18a1e73256e913a7721bf99693673625955e76f42932d3d296981875eb7",
+        "quote": "SNDKc",
+        "quoteAddr": "0xb200000000000000000000397293Cb8cda9a10c5",
+        "priceUsd": "0.00000005428",
+        "liquidityUsd": 4614.33,
+        "volume24h": 0.09
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xbb936051b2889290344baff12b8057bab927276fbe237d752c0f27560f8c74cb",
+        "quote": "SNDKc",
+        "quoteAddr": "0xb200000000000000000000397293Cb8cda9a10c5",
+        "priceUsd": "0.0001091",
+        "liquidityUsd": 109190.58,
+        "volume24h": 0.02
+      },
+      {
+        "dexId": "equalizer",
+        "labels": [],
+        "pair": "0xfBfbb41Ae7f4389ebC7b94878EB99226690F1c4E",
+        "quote": "SNDKc",
+        "quoteAddr": "0xb200000000000000000000397293Cb8cda9a10c5",
+        "priceUsd": "0.0002259",
+        "liquidityUsd": 31.91,
+        "volume24h": 0.38
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x703d635c67a6385f1b80eef25e3d22cc1236e0b59531bda6a2ca3ab0dbda55c8",
+        "quote": "SNDKc",
+        "quoteAddr": "0xb200000000000000000000397293Cb8cda9a10c5",
+        "priceUsd": "0.00001022",
+        "liquidityUsd": 10228.61,
+        "volume24h": 4.78
+      }
+    ],
+    "MSTRc": [
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x051bdaefdb5714412b33b185464ea8c72e2798954c030f7394857743c996b1de",
+        "quote": "cbBTC",
+        "quoteAddr": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+        "priceUsd": "120.031",
+        "liquidityUsd": 60613.35,
+        "volume24h": 29275.94
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x914b704a2bf05e26e953a03edde2d26822004af85da6d85649a4f1db32445dbf",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "122.36",
+        "liquidityUsd": 18783.84,
+        "volume24h": 1121.83
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xd7dbb4670730bf337f8d4d257636e75205ffb9245dd4e78a8ae549e66af9690a",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "120.44",
+        "liquidityUsd": 9359.53,
+        "volume24h": 3499.8
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x0ecc74c47acad38f5b000f1c35ec6da167db8a20f5531c95b8586b2ad56dd5af",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "121.41",
+        "liquidityUsd": 8995.69,
+        "volume24h": 2156.76
+      },
+      {
+        "dexId": "hydrex",
+        "labels": [
+          "CLAMM"
+        ],
+        "pair": "0x7323d5fF1aC3d07A800A89dC1E2D6C7bACA9C720",
+        "quote": "wtMSTR",
+        "quoteAddr": "0xFF05E1bD696900dc6A52CA35Ca61Bb1024eDa8e2",
+        "priceUsd": "120.55",
+        "liquidityUsd": 2494.6,
+        "volume24h": 7201.57
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x326f2357fc9a991fd1f134c0977d96ae9b3857c4d938083b5944aaeaa2e2e0b7",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "120.48",
+        "liquidityUsd": 954.4,
+        "volume24h": 323.58
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xfeec6a1558bbbcb29ad2cae1f5e2f6b53489a482ad18ff90d82458f7e4aae5ba",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "120.047",
+        "liquidityUsd": 93.02,
+        "volume24h": 14.8
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x17ecfe141bada18d94b2c41a2bbaffde8726309a6b4340e1ad7a6910bc7cdf8d",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "122.67",
+        "liquidityUsd": 198.51,
+        "volume24h": 4.91
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x4b9c8bd3aca114f1377986438fb8470e5f452ed8bb1d35157a6e1dafa17daedd",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "121.98",
+        "liquidityUsd": 183.42,
+        "volume24h": 4.38
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x66DCd42E6314B287110922AE36cB2a8bdEECc153",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "120.28",
+        "liquidityUsd": 861922.12,
+        "volume24h": 22184709.21
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x988B949de9d3A3d2172F22C19694c7a5148c9E87",
+        "quote": "cbBTC",
+        "quoteAddr": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+        "priceUsd": "120.31",
+        "liquidityUsd": 589941.7,
+        "volume24h": 9709214.54
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x8b27f626ab668197000BC722A1012022CAeD10E2",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "120.21",
+        "liquidityUsd": 195156.44,
+        "volume24h": 193901.88
+      },
+      {
+        "dexId": "nami",
+        "labels": [],
+        "pair": "0x60B36E1F414f9FA1052C68AB4791Fa4640E6c8A6",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "120.36",
+        "liquidityUsd": 11306.07,
+        "volume24h": 54559.83
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0xc7ff4AA19879f2067605cc8cfA2841224b671254",
+        "quote": "cbBTC",
+        "quoteAddr": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+        "priceUsd": "120.52",
+        "liquidityUsd": 892.77,
+        "volume24h": 150.19
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xc66227927984cfede9c9382bcd0ff2d3787a5d095f5679f3b7e00af66adc5daa",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "119.72",
+        "liquidityUsd": 29.61,
+        "volume24h": 15.1
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0xA83Ec49bccaC2A7446aA6395da4531d4054248b1",
+        "quote": "WETH",
+        "quoteAddr": "0x4200000000000000000000000000000000000006",
+        "priceUsd": "121.43",
+        "liquidityUsd": 69.63,
+        "volume24h": 10.94
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x9b36959CaE9943cc4859d34Ec5d918d195A73267",
+        "quote": "AERO",
+        "quoteAddr": "0x940181a94A35A4569E4529A3CDfB74e38FD98631",
+        "priceUsd": "119.83",
+        "liquidityUsd": 42.42,
+        "volume24h": 0.71
+      },
+      {
+        "dexId": "equalizer",
+        "labels": [],
+        "pair": "0xCC2cb77d25EFAF5f4516eb1cfC01d876bef27Ca2",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "123.39",
+        "liquidityUsd": 18.55,
+        "volume24h": 0.19
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x0e48c892aa5f99ea62c1122a9661ffbab856bb9a7bf8b5a1242ad46f0017d180",
+        "quote": "MSTRc",
+        "quoteAddr": "0xb2000000000000000000004884b426556b92883d",
+        "priceUsd": "0.00002988",
+        "liquidityUsd": 16560.07,
+        "volume24h": 711.46
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xf0c5795cde743a850df0440ad586a978582ee59d0afc0a10564ed537fd19a5cc",
+        "quote": "MSTRc",
+        "quoteAddr": "0xb2000000000000000000004884b426556b92883d",
+        "priceUsd": "0.00001371",
+        "liquidityUsd": 13416.11,
+        "volume24h": 787.49
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x309d573ecae974a55fdee889eb7c5332d8074b150671916847bf7c687dc7bf88",
+        "quote": "MSTRc",
+        "quoteAddr": "0xb2000000000000000000004884b426556b92883d",
+        "priceUsd": "0.000006814",
+        "liquidityUsd": 6311.08,
+        "volume24h": 0
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x63EFABC5D0f686644A60c1fa07c7140203A9f48A",
+        "quote": "MSTRc",
+        "quoteAddr": "0xb2000000000000000000004884b426556b92883d",
+        "priceUsd": "0.9977",
+        "liquidityUsd": 1482.49,
+        "volume24h": 5777.78
+      }
+    ],
+    "SPCXc": [
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x880dB7Dda4407D99508574E680d067D1164B3cFE",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "141.45",
+        "liquidityUsd": 905379.55,
+        "volume24h": 11590369.14
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x0bf58fe0FAc935Ac69595c19B12Ba0d75E3F8c0E",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "141.51",
+        "liquidityUsd": 139947.35,
+        "volume24h": 58536.08
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xe9f4ba63ecba8bc9eb5193700f0bee42806ad47d6248657633340ac7049adcf4",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "141.23",
+        "liquidityUsd": 46865.21,
+        "volume24h": 38362.63
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x7bda51ce3c596230c21d4dfec0268c0d8bcb1b2ca38c41fb18fd3d295ef09a48",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "141.40",
+        "liquidityUsd": 10531.37,
+        "volume24h": 872.34
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v3"
+        ],
+        "pair": "0x127a12FC0953ab2ab89558c67Ba6D597D7140431",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "141.17",
+        "liquidityUsd": 8445.81,
+        "volume24h": 1160.79
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0xeb0c9976604b3a0724F2818ca1f443558fC551Ac",
+        "quote": "WETH",
+        "quoteAddr": "0x4200000000000000000000000000000000000006",
+        "priceUsd": "141.21",
+        "liquidityUsd": 2472.36,
+        "volume24h": 8113.53
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xbff93728ac507c40699cc877be1e0f06f515daacdd36e4efa63664e986b705a4",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "141.67",
+        "liquidityUsd": 1793.67,
+        "volume24h": 155.73
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v3"
+        ],
+        "pair": "0x7bdE436cC2Cb4d9C909607576C8DBfeFcdCE2f8d",
+        "quote": "AAVE",
+        "quoteAddr": "0x63706e401c06ac8513145b7687A14804d17f814b",
+        "priceUsd": "140.99",
+        "liquidityUsd": 1008.39,
+        "volume24h": 186.76
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x92dacb03f5422696c8a1b24fe89b9d42f45efea35c1dc043b24558c73c4d5567",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "141.15",
+        "liquidityUsd": 334.88,
+        "volume24h": 65.48
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x9cb21e8090e2ca5013b89bd6ecce07bfb18708c7a1a9046fe23a0164d2b426a8",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "137.50",
+        "liquidityUsd": 470.62,
+        "volume24h": 4.05
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x97baa57e7869f374abedae3ec90a5d63d6de5538cecdbfa509a3565e7bb674ed",
+        "quote": "ETH",
+        "quoteAddr": "0x0000000000000000000000000000000000000000",
+        "priceUsd": "141.69",
+        "liquidityUsd": 93.34,
+        "volume24h": 3.33
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0xe06988BF596e4F1f6aD8571D15148095597C86C1",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "140.95",
+        "liquidityUsd": 58.43,
+        "volume24h": 3.14
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x4bc898b46d24e6d725caf1a6728d37d85737c2d78fc4c9e13df1c39cd1c97971",
+        "quote": "NVDAc",
+        "quoteAddr": "0xb20000000000000000000078ee7ce2fE4908108C",
+        "priceUsd": "143.84",
+        "liquidityUsd": 88.81,
+        "volume24h": 1.34
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xcf5c5eb7533db5377a0d69e3a2599d90793e7fd97e6fa84c9420a387c605a476",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "140.097",
+        "liquidityUsd": 140.25,
+        "volume24h": 6.39
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v3"
+        ],
+        "pair": "0xE08e2EDA9ce04009274Cf6E6543F9A234Bd910D2",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "141.10",
+        "liquidityUsd": 13.1,
+        "volume24h": 18.13
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0xfd616e10311Ac827FA953cA04f62Fb2B054d8Da6",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.00001553",
+        "liquidityUsd": 33056.16,
+        "volume24h": 5156.35
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xbcaddd5cd374dd6f31c8a11c6e255cc1d0a9e510a9bb9cd0b3f8fcc2222419f7",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "1.17",
+        "liquidityUsd": 31305.27,
+        "volume24h": 631.39
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x2f61397184c16b75c76d99c093e3443aaac6384f5938ea1819796146c0de8f65",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.00009581",
+        "liquidityUsd": 95810.35,
+        "volume24h": 0
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x63d8d458d63d18a7a5941575105f5c6521170854d85c141de96afdeaaa803776",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.00003802",
+        "liquidityUsd": 20075.18,
+        "volume24h": 432.59
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x0acd73ca6184fabad8fffc9dd4c9133356801d61fb70b1c9175d4f0cb349d4c2",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "9.28",
+        "liquidityUsd": 305.73,
+        "volume24h": 4.72
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0x4fc0021BdD59f5DbAE07fA6F070677fc202cf161",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.5728",
+        "liquidityUsd": 214.16,
+        "volume24h": 1.16
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xe17da12a125181121ce03d4d3c0d37f0e2a1f06a0e7f644c3bdf6338d6a03247",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.06306",
+        "liquidityUsd": 74.66,
+        "volume24h": 0.95
+      },
+      {
+        "dexId": "equalizer",
+        "labels": [],
+        "pair": "0x0C0bcA87B9817E6f7b095127672F0CF6884621a6",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.009183",
+        "liquidityUsd": 508.36,
+        "volume24h": 11.69
+      },
+      {
+        "dexId": "equalizer",
+        "labels": [],
+        "pair": "0x8743318591c0aECb9C013abb86702A5d4127529a",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.0002327",
+        "liquidityUsd": 3163.89,
+        "volume24h": 17.45
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x33225ed1f228d8eb3b93313d7c9d81d1b32fc0a0e541939c40c5437693648884",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.00001133",
+        "liquidityUsd": 8785.2,
+        "volume24h": 0.53
+      },
+      {
+        "dexId": "flapsh",
+        "labels": [],
+        "pair": "0xb5DBeBc4A5815eca5166C70249782Ce5FC597f6d",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.000004133",
+        "liquidityUsd": 8935.28,
+        "volume24h": 24.13
+      },
+      {
+        "dexId": "flapsh",
+        "labels": [],
+        "pair": "0xa3F8cb61A5C76f35576A11704Ecd6878FE873f04",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.000003933",
+        "liquidityUsd": 8708.58,
+        "volume24h": 0.22
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x1b871a9473a1a2959d4f2d1ba725d15b0eeea1366a76d17ac675302a21c0ba95",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.000002601",
+        "liquidityUsd": 2562.16,
+        "volume24h": 0.04
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x8a99035514832be5a5d9747e3bf28c50b5b68f124effd1a4695e519bad448ed4",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.5980",
+        "liquidityUsd": 6.09,
+        "volume24h": 0.06
+      },
+      {
+        "dexId": "aerodrome",
+        "labels": [],
+        "pair": "0xc99EF872C8fDbd781D16675132F75Add81AF07BB",
+        "quote": "SPCXc",
+        "quoteAddr": "0xb2000000000000000000007b9fcbd005511aCBd5",
+        "priceUsd": "0.00001906",
+        "liquidityUsd": 12654.82,
+        "volume24h": 13.56
+      }
+    ],
+    "CRCLc": [
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x294666AD6a415E8C33Af801225c04079BB4f1133",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "64.20",
+        "liquidityUsd": 214242.81,
+        "volume24h": 90140.36
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0xc945e0fa770fa83e854720edca6b82c6d3ac14a4c1b81c897116379f19934b00",
+        "quote": "CRCLc",
+        "quoteAddr": "0xB20000000000000000000019f6E7C675b73C2e4D",
+        "priceUsd": "0.00001408",
+        "liquidityUsd": 11638.36,
+        "volume24h": 0.58
+      }
+    ],
+    "INTCc": [
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x8bbba3f364b24581a0c73b9d35f639fe54943b114b045976bb112e058875a7a5",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "57.59",
+        "liquidityUsd": 10589.9,
+        "volume24h": 4172.05
+      },
+      {
+        "dexId": "uniswap",
+        "labels": [
+          "v4"
+        ],
+        "pair": "0x6485e1ce8a9a3ba08b2e53dd6aadf44e628189c8f407df7d3caadc01b5f0f037",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "100.00069",
+        "liquidityUsd": 137.71,
+        "volume24h": 0
+      },
+      {
+        "dexId": "aero",
+        "labels": [],
+        "pair": "0x3D384288fA79B51De882B06B617aB7989CcAd4f3",
+        "quote": "USDC",
+        "quoteAddr": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "priceUsd": "57.51",
+        "liquidityUsd": 221422.09,
+        "volume24h": 91793.16
+      }
+    ]
+  }
+}

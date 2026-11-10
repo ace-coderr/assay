@@ -13,8 +13,21 @@ export interface TokenRef {
   navUpdatedAt?: string;
 }
 
+export type Venue = "uniswap-v3" | "aerodrome-v2" | "aerodrome-slipstream";
+
+/** Uniswap v3 and Aerodrome Slipstream share the concentrated-liquidity interface (slot0, liquidity, ticks, observe). */
+export const isConcentrated = (v: Venue): boolean => v === "uniswap-v3" || v === "aerodrome-slipstream";
+
+export const VENUE_LABEL: Record<Venue, string> = {
+  "uniswap-v3": "Uniswap v3",
+  "aerodrome-v2": "Aerodrome v2",
+  "aerodrome-slipstream": "Aerodrome Slipstream",
+};
+
 export interface PoolRead {
-  venue: "uniswap-v3" | "aerodrome-v2";
+  venue: Venue;
+  /** Factory the pool was found through, for transparency. */
+  factory?: `0x${string}`;
   pool: `0x${string}`;
   feeBps?: number;
   /** USDC per 1 token (spot, from slot0 or reserves). */
@@ -31,6 +44,10 @@ export interface PoolRead {
   /** Nearest initialized ticks around the current tick: bounds of the active liquidity range. */
   tickLower?: number;
   tickUpper?: number;
+  /** Every initialized tick within the read window, with its liquidityNet (for exact swap simulation). */
+  ticks?: { tick: number; liquidityNet: bigint }[];
+  /** How far the tick data reaches around the current price, in bps each way. */
+  tickWindowBps?: number;
   /** USD needed to push this pool spot price 1% (cheaper direction): the manipulation cost. */
   costToMove100bpsUsd?: number;
   /** The active liquidity range ends before a 1% move: the true cost is higher. */

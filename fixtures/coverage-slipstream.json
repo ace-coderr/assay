@@ -1,0 +1,166 @@
+{
+  "checkedAt": "2026-11-10T19:29:17.052Z",
+  "factories": {
+    "0x9CB2…(aero)": "0x9CB220581b91b0C83223012FE69688b92aD07a76",
+    "0xf8f2…(aerodrome)": "0xf8f2eB4940CFE7d13603DDDD87f123820Fc061Ef",
+    "0x5e7B…(older)": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A"
+  },
+  "tickSpacingsTried": [
+    1,
+    5,
+    10,
+    20,
+    50,
+    60,
+    100,
+    200,
+    2000
+  ],
+  "tokens": {
+    "TSLAc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x7A33000372f3F028f074182CCb9d16cBEEfBF920"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x469337fDcc5E8f38e2E4B670B04F57865D13a7BB"
+        }
+      ],
+      "0x5e7B…(older)": []
+    },
+    "GOOGLc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x16c70F04C3080a127486Cdf5a4C33c066bBF47C3"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0xB1987CAD1682841b4b641d50E520777eC5Ab5542"
+        }
+      ],
+      "0x5e7B…(older)": []
+    },
+    "SNDKc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x2836e062a3fe75943a7F4A552E2365b98E414E75"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x5A8236f575471e7BfCA2C8462a200c28f737246E"
+        }
+      ],
+      "0x5e7B…(older)": []
+    },
+    "MSTRc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x66DCd42E6314B287110922AE36cB2a8bdEECc153"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x8b27f626ab668197000BC722A1012022CAeD10E2"
+        },
+        {
+          "tickSpacing": 200,
+          "pool": "0x69711B92385D0e013BFaff013CC26E7548A874d1"
+        }
+      ],
+      "0x5e7B…(older)": []
+    },
+    "SPCXc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x880dB7Dda4407D99508574E680d067D1164B3cFE"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x0bf58fe0FAc935Ac69595c19B12Ba0d75E3F8c0E"
+        }
+      ],
+      "0x5e7B…(older)": []
+    },
+    "CRCLc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x294666AD6a415E8C33Af801225c04079BB4f1133"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [],
+      "0x5e7B…(older)": []
+    },
+    "INTCc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0x3D384288fA79B51De882B06B617aB7989CcAd4f3"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [],
+      "0x5e7B…(older)": []
+    },
+    "AAPLc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0xF5FCB9CDAFcE67d50AfEf298F88E709d2B946BA6"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0xA3b1E3f9747065e2073722Ff4c9027d3eA4994F0"
+        },
+        {
+          "tickSpacing": 200,
+          "pool": "0x8FeaCB3AAC9499bA4F53aa16e9CD38c36C57765E"
+        }
+      ],
+      "0x5e7B…(older)": []
+    },
+    "NVDAc": {
+      "0x9CB2…(aero)": [
+        {
+          "tickSpacing": 10,
+          "pool": "0xF668e21993f0ACd7ab00BB1cFbAeD0df28A3C8EC"
+        },
+        {
+          "tickSpacing": 50,
+          "pool": "0xCf7a059fc3609fBec819132d6ABFbc6D142777FB"
+        }
+      ],
+      "0xf8f2…(aerodrome)": [
+        {
+          "tickSpacing": 1,
+          "pool": "0x6ad159BB312153Ec89AB0D7b13775A2766F0EAB7"
+        },
+        {
+          "tickSpacing": 10,
+          "pool": "0x853F5f1B92b16714Fe6CDA67CAad0856B83C7ab9"
+        },
+        {
+          "tickSpacing": 200,
+          "pool": "0x204B5342c46A7E1BE3988E60aCB2b7aaCa2e40AB"
+        }
+      ],
+      "0x5e7B…(older)": []
+    }
+  }
+}

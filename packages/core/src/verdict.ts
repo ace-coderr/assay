@@ -1,5 +1,5 @@
-import type { PoolRead, Reading } from "./types.js";
-import { v3Impact } from "./math.js";
+import { isConcentrated, type PoolRead, type Reading } from "./types.js";
+import { v3Impact, walkSwap } from "./math.js";
 
 export interface ImpactQuote {
   pool: string;
@@ -10,6 +10,8 @@ export interface ImpactQuote {
   /** Result is a lower bound: the size leaves the current v3 liquidity range. */
   lowerBound: boolean;
   feeBps: number;
+  /** Initialized ticks the simulated trade crossed (exact tick-by-tick simulation). */
+  ticksCrossed?: number;
   note?: string;
 }
 
@@ -31,7 +33,33 @@ export function v2Impact(usdcReserve: number, tokenReserve: number, usd: number,
 
 /** Read-only price-impact quote against the pool a reading was based on. Never builds a transaction. */
 export function quoteImpact(pool: PoolRead, tokenDecimals: number, usd: number, side: "buy" | "sell"): ImpactQuote {
-  if (pool.venue === "uniswap-v3") {
+  if (isConcentrated(pool.venue) && pool.ticks && pool.tickWindowBps && pool.liquidity != null && pool.sqrtPriceX96 != null && pool.tick != null && pool.tokenIsToken0 != null) {
+    // Exact fee-aware simulation across the initialized ticks that were read on-chain.
+    const w = walkSwap({
+      sqrtPriceX96: BigInt(pool.sqrtPriceX96),
+      liquidity: BigInt(pool.liquidity),
+      tick: pool.tick,
+      ticks: pool.ticks.map((t) => ({ tick: t.tick, liquidityNet: BigInt(t.liquidityNet) })),
+      windowBps: pool.tickWindowBps,
+      tokenIsToken0: pool.tokenIsToken0,
+      tokenDecimals,
+      feeBps: pool.feeBps ?? 0,
+      side,
+      usdBudget: usd,
+    });
+    if (!w) return { pool: pool.pool, venue: pool.venue, side, sizeUsd: usd, slippageBps: null, lowerBound: false, feeBps: pool.feeBps ?? 0, note: "cannot price this size" };
+    return {
+      pool: pool.pool,
+      venue: pool.venue,
+      side,
+      sizeUsd: usd,
+      slippageBps: Number.isFinite(w.slippageBps) ? w.slippageBps : null,
+      lowerBound: w.windowExceeded,
+      feeBps: pool.feeBps ?? 0,
+      ticksCrossed: w.ticksCrossed,
+    };
+  }
+  if (isConcentrated(pool.venue)) {
     if (pool.liquidity == null || pool.sqrtPriceX96 == null || pool.tick == null || pool.tickSpacing == null || pool.tokenIsToken0 == null) {
       return { pool: pool.pool, venue: pool.venue, side, sizeUsd: usd, slippageBps: null, lowerBound: false, feeBps: pool.feeBps ?? 0, note: "pool state incomplete" };
     }

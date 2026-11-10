@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { createPublicClient, http, parseAbi, fallback } from "viem";
 import { base } from "viem/chains";
-import { v3Price, type PoolRead } from "@assay/core";
+import { isConcentrated, v3Price, type PoolRead } from "@assay/core";
 import { Disclaimer, ErrorBox } from "../components/bits";
 import { fmtBps, fmtPrice, useApi, type Board, type Status } from "../lib/api";
 
 const POOL_ABI = parseAbi([
-  "function slot0() view returns (uint160 sqrtPriceX96,int24 tick,uint16,uint16,uint16,uint8,bool)",
+  "function slot0() view returns (uint160 sqrtPriceX96,int24 tick)",
   "function liquidity() view returns (uint128)",
 ]);
 
@@ -27,7 +27,7 @@ export default function Method() {
   const pool = r?.poolUsed as (PoolRead & { sqrtPriceX96?: string }) | undefined;
 
   const run = async () => {
-    if (!r || !pool || pool.venue !== "uniswap-v3") return;
+    if (!r || !pool || !isConcentrated(pool.venue)) return;
     setBusy(true); setErr(null); setRes(null);
     try {
       const client = createPublicClient({ chain: base, transport: fallback([http("https://base-rpc.publicnode.com"), http("https://mainnet.base.org")]) });
@@ -61,9 +61,9 @@ export default function Method() {
           <label>Token
             <select value={symbol} onChange={(e) => { setSymbol(e.target.value); setRes(null); }}>{ok.map((x) => <option key={x.symbol}>{x.symbol}</option>)}</select>
           </label>
-          <button className="btn primary" onClick={() => void run()} disabled={busy || !pool || pool.venue !== "uniswap-v3"}>{busy ? "Reading chain…" : "Recompute in my browser"}</button>
+          <button className="btn primary" onClick={() => void run()} disabled={busy || !pool || !isConcentrated(pool.venue)}>{busy ? "Reading chain…" : "Recompute in my browser"}</button>
         </div>
-        {pool && pool.venue !== "uniswap-v3" && <p className="muted" style={{ fontSize: 13 }}>This reading used an Aerodrome v2 pool; browser reproduction covers Uniswap v3 pools.</p>}
+        {pool && !isConcentrated(pool.venue) && <p className="muted" style={{ fontSize: 13 }}>This reading used a constant-product Aerodrome v2 pool; browser reproduction covers concentrated-liquidity pools (Uniswap v3, Aerodrome Slipstream).</p>}
         {err && <p className="coral" role="alert" style={{ fontSize: 13 }}>RPC error: {err}</p>}
         {board.error && <ErrorBox error={board.error} onRetry={board.reload} />}
         {r && pool && (
@@ -115,10 +115,10 @@ reference is already total return:
         <ul style={{ color: "var(--muted)", fontSize: 14.5 }}>
           <li>A Uniswap v3 pool with zero in-range liquidity still reports a price. Live examples were far off (5000 vs ~643, 999.99 vs ~350, 3.4e40). Such pools are rejected, and the reason is shown.</li>
           <li>Pools holding under $1,000 of USDC are ignored.</li>
-          <li>A pool's total balance can overstate its depth, because liquidity outside the current price range cannot defend the price. Assay also computes the cost to push each Uniswap v3 pool's price 1% within its active range, and ignores pools where that costs under $100. Live examples: two GOOGLc pools needed only $34 and $56.</li>
+          <li>A pool's total balance can overstate its depth, because liquidity far from the current price cannot defend it. Assay reads every initialized tick within about 3% of the price (<code>tickBitmap</code> and <code>ticks().liquidityNet</code>), simulates a push tick by tick, and ignores pools where moving the price 1% costs under $100. A single-range estimate is not enough: on 2026-11-10 it put the CRCLc Aerodrome Slipstream pool at $32, but its liquidity is stacked across many ticks and the real cost to move it 1% is about $65,000.</li>
           <li>The deepest qualifying pool is used. If another qualifying pool disagrees by more than 300 bps, or spot differs from the 30 minute TWAP by more than 300 bps, the reading is Broken.</li>
           <li>Aerodrome v2 pools have no onchain TWAP read, so only depth and cross-pool agreement protect them.</li>
-          <li>Probe estimates are lower bounds when a size leaves the pool's current liquidity range.</li>
+          <li>Probe sizes are simulated tick by tick over the initialized ticks read on-chain (about 3% each side of the price). A size that would need liquidity beyond that is shown as an "at least" value. For Uniswap v3 the simulation was checked against Uniswap's own QuoterV2 (see docs/verification.md).</li>
         </ul>
         <p className="notice">Sources are documented in <a href="https://github.com/ace-coderr/assay/blob/main/docs/data-sources.md" target="_blank" rel="noreferrer">docs/data-sources.md</a>, with the real responses used as test fixtures.</p>
       </div>

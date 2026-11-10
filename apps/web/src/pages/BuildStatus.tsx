@@ -41,7 +41,8 @@ export default function BuildStatus() {
     ["Attestation contract", "Testnet only", "Base Sepolia. Nothing on mainnet. See the Attestations page for its deployed state."],
     ["Corporate-action history", "Partial", "Onchain log scan catches up from roughly two weeks back; earlier events are not covered."],
     ["Tokens without a reference value (306)", "Not covered", "The API publishes no reference value, so they are not assayed."],
-    ["Uniswap v4, Aerodrome concentrated pools", "Not covered", "Only Uniswap v3 and Aerodrome v2 USDC pools are read."],
+    ["Uniswap v3, Aerodrome v2 and Slipstream USDC pools", "Live", "Discovered on-chain from each factory. Slipstream holds the deepest stock pools."],
+    ["Uniswap v4, PancakeSwap, Nami, Solidly, non-USDC pairs", "Not covered", "Checked and found much shallower than the Aerodrome pools, so they are not read. See docs/coverage.md."],
     ["Block explorer cross-check", "Not automated", "Explorer APIs need a key or block bots. Readings are verified across two RPCs instead; links to explorer pages are provided."],
     ["Trading, swaps, custody", "Never", "Out of scope by design. No endpoint, tool or button does this."],
   ];

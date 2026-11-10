@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { VENUE_LABEL } from "@assay/core";
 import { Strip } from "../components/Strip";
 import { Disclaimer, ErrorBox, Loading, StateBadge } from "../components/bits";
 import { explorer, fmtAge, fmtBps, fmtPrice, fmtUsd, short, useApi, type ActionEvent, type Board, type HistoryPoint, type Reading } from "../lib/api";
@@ -92,7 +93,7 @@ export default function Token() {
                 <div className="card">
                   <h3 style={{ fontSize: 16, marginBottom: 12 }}>Pool used</h3>
                   <dl className="kv">
-                    <dt>Venue</dt><dd>{r.poolUsed?.venue}{r.poolUsed?.feeBps != null ? ` · ${(r.poolUsed.feeBps / 100).toFixed(2)}% fee` : ""}</dd>
+                    <dt>Venue</dt><dd>{r.poolUsed ? VENUE_LABEL[r.poolUsed.venue] : ""}{r.poolUsed?.feeBps != null ? ` · ${(r.poolUsed.feeBps / 100).toFixed(2)}% fee` : ""}</dd>
                     <dt>Address</dt><dd><a href={explorer(r.poolUsed!.pool)} target="_blank" rel="noreferrer">{r.poolUsed!.pool}</a></dd>
                     <dt>USDC depth</dt><dd>{fmtUsd(r.poolUsed?.usdcDepth)}</dd>
                     <dt>Cost to move 1%</dt>
