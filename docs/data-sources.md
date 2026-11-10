@@ -114,3 +114,5 @@ only thin pools (SNDKc best pool ≈ $15.6 USDC).
   against Chainlink. Spot-check any pool by hand on an explorer.
 - Corporate-action endpoint (needs a real announcement UUID; see step 4).
 - Uniswap V4 and other venues.
+
+Live attestation contract (Base Sepolia): 0xa386fc75bcc1646569028623602e9b19e1eacee0
