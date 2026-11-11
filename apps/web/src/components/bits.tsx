@@ -72,6 +72,29 @@ export function Disclaimer() {
   return <p className="notice">{DISCLAIMER_TEXT}</p>;
 }
 
+/** Copies text. Uses the Clipboard API, and falls back to a hidden textarea where it is refused. Returns success. */
+export async function copyText(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      return ok;
+    } catch {
+      return false;
+    }
+  }
+}
+
 export function CopyBlock({ text, label = "Copy" }: { text: string; label?: string }) {
   const [done, setDone] = useState(false);
   return (
@@ -80,8 +103,8 @@ export function CopyBlock({ text, label = "Copy" }: { text: string; label?: stri
       <button
         className="btn small"
         onClick={() => {
-          void navigator.clipboard?.writeText(text).then(() => {
-            setDone(true);
+          void copyText(text).then((ok) => {
+            setDone(ok);
             setTimeout(() => setDone(false), 1500);
           });
         }}

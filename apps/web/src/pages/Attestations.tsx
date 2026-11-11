@@ -1,7 +1,34 @@
 import { useEffect, useState } from "react";
 import { createPublicClient, http, parseAbiItem, formatUnits } from "viem";
 import { baseSepolia } from "viem/chains";
-import { Disclaimer, Loading } from "../components/bits";
+import { Link } from "react-router-dom";
+import { copyText, Disclaimer, Loading } from "../components/bits";
+import { useData, type Board } from "../lib/api";
+
+const shortAddr = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+
+/** Token symbol as the main label, shortened address as a smaller label, full address copyable. */
+function TokenCell({ address, symbol }: { address: string; symbol?: string }) {
+  const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
+  const copy = () => {
+    void copyText(address).then((ok) => {
+      setState(ok ? "copied" : "failed");
+      setTimeout(() => setState("idle"), 1800);
+    });
+  };
+  const copied = state === "copied";
+  return (
+    <div className="token-cell">
+      <div className="token-cell-main">
+        {symbol ? <Link to={`/app/token/${symbol}`}><b>{symbol}</b></Link> : <a className="mono" href={`https://basescan.org/address/${address}`} target="_blank" rel="noreferrer">{shortAddr(address)}</a>}
+      </div>
+      <div className="token-cell-sub">
+        {symbol && <a className="mono dim" href={`https://basescan.org/address/${address}`} target="_blank" rel="noreferrer" title={address} aria-label={`${symbol} token contract ${address} on Basescan`}>{shortAddr(address)}</a>}
+        <button className="copy-mini" onClick={copy} aria-label={`Copy full address ${address}`} title={address}>{copied ? "copied" : state === "failed" ? "blocked" : "copy"}</button>
+      </div>
+    </div>
+  );
+}
 
 // The deployment file is written by packages/contracts/scripts/deploy.ts. Until a deployment exists, this is empty.
 const files = import.meta.glob("../../../../packages/contracts/deployments/base-sepolia.json", { eager: true, import: "default" }) as Record<string, { address: `0x${string}`; deployTx: string; block: number }>;
@@ -13,6 +40,9 @@ const EVENT = parseAbiItem("event Attested(address indexed token, address indexe
 interface Row { token: string; attester: string; price: number; ref: number; ts: number; state: string; tx: string; block: bigint }
 
 export default function Attestations() {
+  const board = useData<Board>("board.json", 300_000);
+  // Symbols come from the published board (address -> symbol), not from a list in the code.
+  const symbols = new Map<string, string>(board.data?.readings.map((r) => [r.address.toLowerCase(), r.symbol]) ?? []);
   const [rows, setRows] = useState<Row[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,12 +97,12 @@ export default function Attestations() {
           {rows && rows.length === 0 && <div className="card">No attestations submitted yet.</div>}
           {rows && rows.length > 0 && (
             <div className="table-wrap">
-              <table>
+              <table className="sticky-first">
                 <thead><tr><th>Token</th><th>State</th><th className="num">DEX</th><th className="num">Reference</th><th>Time (UTC)</th><th>Tx</th></tr></thead>
                 <tbody>
                   {rows.map((r) => (
                     <tr key={r.tx}>
-                      <td className="mono"><a href={`https://basescan.org/address/${r.token}`} target="_blank" rel="noreferrer">{r.token.slice(0, 8)}…{r.token.slice(-4)}</a></td>
+                      <td><TokenCell address={r.token} symbol={symbols.get(r.token.toLowerCase())} /></td>
                       <td><span className={`badge ${r.state.toLowerCase()}`}>{r.state.toUpperCase()}</span></td>
                       <td className="num">${r.price.toFixed(2)}</td><td className="num">${r.ref.toFixed(2)}</td>
                       <td className="mono">{new Date(r.ts * 1000).toISOString().replace("T", " ").slice(0, 19)}</td>

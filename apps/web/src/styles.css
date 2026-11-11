@@ -226,7 +226,24 @@ pre { background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
 .kv { display: grid; grid-template-columns: auto 1fr; gap: 6px 18px; font-size: 14px; }
 .kv dt { color: var(--dim); }
 .kv dd { margin: 0; font-family: var(--mono); font-size: 13px; word-break: break-all; }
-.board-strip { min-width: 200px; max-width: 280px; }
+.token-cell { display: grid; gap: 2px; line-height: 1.25; }
+.token-cell-sub { display: flex; align-items: center; gap: 8px; font-size: 11.5px; }
+.token-cell-sub a { font-size: 11.5px; }
+.copy-mini { font: inherit; font-size: 11px; color: var(--muted); background: none; border: 1px solid var(--line-2); border-radius: 6px; padding: 0 6px; cursor: pointer; }
+.copy-mini:hover { color: var(--text); border-color: var(--blue-hi); }
+.board-strip { min-width: 130px; width: 26%; }
+/* The app area is wider than the marketing pages so the 9-column Board fits at 1280 and 1440 without scrolling. */
+.wrap.app { max-width: 1360px; }
+.table-wrap.board-wrap { overflow-x: auto; }
+table.board { font-size: 13px; }
+table.board th { padding: 9px 8px; font-size: 11px; letter-spacing: .05em; }
+table.board td { padding: 10px 8px; white-space: nowrap; }
+table.board td.muted { white-space: normal; }
+table.board th:first-child, table.board td:first-child { padding-left: 14px; }
+/* The token column stays put when the table scrolls sideways on small screens. */
+table.sticky-first th:first-child, table.sticky-first td:first-child { position: sticky; left: 0; z-index: 2; background: var(--panel); box-shadow: 1px 0 0 var(--line); }
+table.sticky-first th:first-child { background: var(--panel); }
+table.sticky-first tbody tr:hover td:first-child { background: #151922; }
 .list { display: grid; gap: 10px; }
 .item { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
 .chip { font-family: var(--mono); font-size: 12.5px; min-height: 34px; display: inline-flex; align-items: center; padding: 5px 12px; border: 1px solid var(--line-2); border-radius: 8px; color: var(--muted); background: var(--bg); cursor: pointer; }
@@ -235,6 +252,11 @@ pre { background: var(--bg); border: 1px solid var(--line); border-radius: 10px;
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 
 /* ---------- responsive ---------- */
+@media (min-width: 821px) and (max-width: 1100px) {
+  :root { --rail-w: 184px; }
+  .app { gap: 18px; }
+  .rail a { padding: 8px 8px; gap: 8px; font-size: 13.5px; }
+}
 @media (max-width: 980px) {
   .hero { grid-template-columns: 1fr; padding-top: 40px; }
   .matrix, .built-on { grid-template-columns: 1fr 1fr; }

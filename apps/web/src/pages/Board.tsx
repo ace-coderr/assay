@@ -43,19 +43,19 @@ export default function Board() {
       {loading && <Loading rows={6} />}
 
       {data && (
-        <div className="table-wrap">
-          <table>
+        <div className="table-wrap board-wrap">
+          <table className="board sticky-first">
             <thead>
               <tr>
                 <th>Token</th>
                 <th>State</th>
                 <th className="num">DEX</th>
                 <th className="num">Reference</th>
-                <th className="num">Deviation</th>
-                <th>Scale</th>
-                <th className="num">Pool depth</th>
-                <th className="num" title="USD needed to push the price 1%">Cost to move 1%</th>
-                <th className="num">Ref age</th>
+                <th className="num" title="DEX price vs reference, in basis points">Dev</th>
+                <th title="Deviation on a scale of plus or minus 300 bps">Scale</th>
+                <th className="num" title="USDC in the pool">Depth</th>
+                <th className="num" title="USD needed to push the price 1%">Move 1%</th>
+                <th className="num" title="Age of the reference value">Ref age</th>
               </tr>
             </thead>
             <tbody>
