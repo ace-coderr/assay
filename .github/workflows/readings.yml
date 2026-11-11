@@ -15,11 +15,12 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write # only to start the next run (see the last step)
 
 jobs:
   publish:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -52,3 +53,21 @@ jobs:
           git add -A
           git commit -q -m "data $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
+
+      # GitHub's cron proved unreliable for this repository (measured: about one scheduled run every few hours instead
+      # of every 10 minutes). So each run starts the next one itself, about 10 minutes after it began. The cron above
+      # stays as a restart if the chain ever breaks. It never piles up: a new run is only started when no other run
+      # of this workflow is queued or running. Runs are free on a public repository.
+      - name: Start the next run
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sleep 420
+          busy=$(gh run list --workflow readings.yml --limit 10 --json databaseId,status \
+            -q "[.[] | select(.databaseId != ${{ github.run_id }}) | select(.status==\"queued\" or .status==\"in_progress\" or .status==\"waiting\" or .status==\"pending\")] | length")
+          if [ "$busy" -eq 0 ]; then
+            gh workflow run readings.yml
+          else
+            echo "another run is already queued or running; not starting another"
+          fi
