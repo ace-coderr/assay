@@ -30,6 +30,14 @@ The repository is public, which is what makes Actions minutes and Pages free.
 
 ## Behaviour changes, stated plainly
 
+- **GitHub cron alone is not reliable here.** Measured on this repository: after the workflow was added, the first
+  scheduled run came about 3.5 hours later and the next one had not appeared 2.5 hours after that, so cron delivered
+  roughly one reading every few hours. To keep the board fresh at no cost, each run ends by starting the next one
+  (`gh workflow run`, about 10 minutes after it began), and the cron stays as a restart if the chain breaks. A new
+  run is only started when no other run is queued or in progress, so chains cannot pile up. Measured start-to-start
+  gaps of the chain were 7m19s and 7m22s with a 7-minute wait; the wait is now 9 minutes for about 10. The cost is
+  runner time (mostly sleeping), which is free on a public repository; delete the "Start the next run" step in
+  `.github/workflows/readings.yml` to go back to cron only.
 - **Cadence.** Readings are produced every 10 minutes by schedule, not 5. GitHub's cron is best-effort and can lag by
   many minutes under load, so the UI always shows each reading's real age, and staleness thresholds are set for
   this cadence (a board older than 30 minutes is flagged; `check_before_trade` treats readings older than 45 minutes

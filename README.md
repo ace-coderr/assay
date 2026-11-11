@@ -26,7 +26,7 @@ trade controls anywhere.
 
 | Part | Where it runs | Notes |
 | --- | --- | --- |
-| Readings pipeline | GitHub Actions, `.github/workflows/readings.yml` | Every 10 minutes (best-effort: GitHub can run it late). Publishes JSON to the orphan `data` branch as one force-pushed commit; rolling history is carried forward by reading the previous data first. Needs no secrets. |
+| Readings pipeline | GitHub Actions, `.github/workflows/readings.yml` | About every 10 minutes: GitHub's cron alone proved unreliable (hours between runs), so each run starts the next one and the cron is only a restart. Still best-effort, so every reading shows its real age. Publishes JSON to the orphan `data` branch as one force-pushed commit; rolling history is carried forward by reading the previous data first. Needs no secrets. |
 | Website | GitHub Pages, `.github/workflows/pages.yml` | Static React app at `/assay/`, hash routing so deep links work. Reads the JSON from `raw.githubusercontent.com` and talks to the public Base RPCs directly for the liquidity probe and the attestation list. |
 | MCP server | Your machine (stdio) | No hosted endpoint exists. See below. |
 | Attestation contract | Base Sepolia (testnet) | Signing is local-only. No private key is in GitHub Actions or any secret. |

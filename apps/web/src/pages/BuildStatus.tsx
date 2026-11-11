@@ -55,7 +55,7 @@ export default function BuildStatus() {
 
   const rows: [string, string, string][] = [
     ["Core engine (states, depth, TWAP and manipulation-cost guards)", "Done", "Unit tests run on fixtures captured from live calls; swap simulation checked against Uniswap's own quoter (docs/verification.md)."],
-    ["Scheduled readings + 7 days of history", "Live", "GitHub Actions every 10 minutes (best-effort, can run late), published as JSON to the data branch."],
+    ["Scheduled readings + 7 days of history", "Live", "GitHub Actions, about every 10 minutes: each run starts the next, because the cron alone fired only every few hours. Best-effort; every reading shows its real age. Published as JSON to the data branch."],
     ["Uniswap v3, Aerodrome v2 and Slipstream USDC pools", "Live", "Discovered on-chain from each factory. Slipstream holds the deepest stock pools."],
     ["Liquidity probe and Attestations", "Live", "Computed and read in your browser over public RPCs."],
     ["MCP server (5 read-only tools)", "Local", "Runs on your machine over stdio. There is no hosted endpoint."],
