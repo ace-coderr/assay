@@ -48,7 +48,9 @@ export function useApi<T>(path: string | null, refreshMs = 0): Result<T> {
   const load = useCallback(async () => {
     if (!path) return;
     try {
-      const res = await fetch(path, { headers: { accept: "application/json" } });
+      // "no-cache" = revalidate with the server on every load (a cheap conditional request). Without it the browser would
+      // reuse raw.githubusercontent.com's max-age=300 and could show data older than what is actually published.
+      const res = await fetch(path, { cache: "no-cache" });
       const j = await res.json().catch(() => null);
       if (!alive.current) return;
       if (!res.ok) {
