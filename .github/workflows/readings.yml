@@ -63,7 +63,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          sleep 420
+          sleep 540
           busy=$(gh run list --workflow readings.yml --limit 10 --json databaseId,status \
             -q "[.[] | select(.databaseId != ${{ github.run_id }}) | select(.status==\"queued\" or .status==\"in_progress\" or .status==\"waiting\" or .status==\"pending\")] | length")
           if [ "$busy" -eq 0 ]; then
