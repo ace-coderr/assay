@@ -34,9 +34,13 @@ The repository is public, which is what makes Actions minutes and Pages free.
   many minutes under load, so the UI always shows each reading's real age, and staleness thresholds are set for
   this cadence (a board older than 30 minutes is flagged; `check_before_trade` treats readings older than 45 minutes
   as unknown).
-- **Data freshness.** `raw.githubusercontent.com` caches for 5 minutes (`max-age=300`), so a reading can be up to
-  about 5 minutes older than the commit that produced it. jsDelivr was rejected because it caches branch files for up
-  to 12 hours.
+- **Data freshness, and a stale-cache trap.** `raw.githubusercontent.com` sends `max-age=300`, but on some network
+  paths a *branch* URL kept returning a reading that was over an hour old while the newest commit was correct (seen
+  from the in-app browser used to test this site; the same URL from a terminal was correct). So neither the site nor
+  the MCP server read the branch URL directly: they first ask `api.github.com` which commit the `data` branch points
+  at (one small CORS-enabled call, cached for 5 minutes) and read files from the immutable commit-SHA URL. If the API is
+  rate limited (60 calls per hour per IP without a token) they fall back to the branch URL, and the displayed reading
+  age makes any stale copy visible. jsDelivr was rejected because it caches branch files for up to 12 hours.
 - **Scheduled workflows pause.** GitHub disables scheduled workflows in a public repository after 60 days without
   repository activity. If that happens, re-enable it in the Actions tab (a manual run also restarts it).
 - **No hosted MCP.** Agents must run the local server (see the Agent page).

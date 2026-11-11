@@ -1,6 +1,7 @@
 import {
   ageSec,
   check,
+  DataSource,
   DISCLAIMER,
   findReading,
   liveReading,
@@ -33,14 +34,17 @@ interface ActionsFile {
  * When a source is down the answer says so explicitly ("unavailable"); nothing is made up.
  */
 export function publishedBackend(opts: PublishedBackendOptions = {}): AssayBackend {
-  const dataUrl = (opts.dataUrl ?? process.env.ASSAY_DATA_URL ?? DEFAULT_DATA_URL).replace(/\/$/, "");
   const fetchFn = opts.fetchFn ?? fetch;
+  // An explicit URL (option or ASSAY_DATA_URL) is used as given. Otherwise the commit behind the data branch is
+  // resolved first and files are read by SHA, because branch URLs can be served stale on some network paths.
+  const explicit = opts.dataUrl ?? process.env.ASSAY_DATA_URL;
+  const source = new DataSource({ fetchFn, fixedRoot: explicit });
   const liveRead = opts.live ?? ((r: Reading) => liveReading(r));
   const now = opts.now ?? Date.now;
 
   async function getJson<T>(file: string): Promise<{ ok: true; data: T } | { ok: false; error: string }> {
     try {
-      const res = await fetchFn(`${dataUrl}/${file}`, { signal: AbortSignal.timeout(15_000) });
+      const res = await source.fetch(file, { signal: AbortSignal.timeout(15_000) });
       if (!res.ok) return { ok: false, error: `${file}: HTTP ${res.status}` };
       return { ok: true, data: (await res.json()) as T };
     } catch (e) {

@@ -6,3 +6,4 @@ export * from "./chain.js";
 export * from "./verdict.js";
 export * from "./published.js";
 export * from "./live.js";
+export * from "./datasource.js";

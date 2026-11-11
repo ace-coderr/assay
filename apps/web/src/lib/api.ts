@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Reading } from "@assay/core";
+import { DataSource, type Reading } from "@assay/core";
 
 export type { Reading };
 
@@ -48,9 +48,10 @@ export function useApi<T>(path: string | null, refreshMs = 0): Result<T> {
   const load = useCallback(async () => {
     if (!path) return;
     try {
-      // "no-cache" = revalidate with the server on every load (a cheap conditional request). Without it the browser would
-      // reuse raw.githubusercontent.com's max-age=300 and could show data older than what is actually published.
-      const res = await fetch(path, { cache: "no-cache" });
+      // Published files are read by commit SHA (immutable, never stale); everything else is fetched as given.
+      // "no-cache" revalidates on every load so the browser cache cannot hide a newer reading.
+      const isData = path.startsWith(`${DATA_URL}/`);
+      const res = isData ? await dataSource.fetch(path.slice(DATA_URL.length + 1), { cache: "no-cache" }) : await fetch(path, { cache: "no-cache" });
       const j = await res.json().catch(() => null);
       if (!alive.current) return;
       if (!res.ok) {
@@ -85,7 +86,10 @@ export function useApi<T>(path: string | null, refreshMs = 0): Result<T> {
  * Where the pipeline publishes JSON: the orphan `data` branch, served by raw.githubusercontent.com
  * (CORS: *, cached ~5 minutes). Override with VITE_DATA_URL for local testing.
  */
-export const DATA_URL: string = (import.meta.env.VITE_DATA_URL as string | undefined) ?? "https://raw.githubusercontent.com/ace-coderr/assay/data";
+const OVERRIDE = import.meta.env.VITE_DATA_URL as string | undefined;
+export const DATA_URL: string = OVERRIDE ?? "https://raw.githubusercontent.com/ace-coderr/assay/data";
+/** Resolves the data branch to its commit and reads files by SHA; see DataSource for why. */
+export const dataSource = new DataSource({ fixedRoot: OVERRIDE });
 export const REPO_URL = "https://github.com/ace-coderr/assay";
 export const SITE_URL = "https://ace-coderr.github.io/assay/";
 

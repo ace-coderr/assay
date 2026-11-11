@@ -42241,16 +42241,92 @@ async function liveReading(r, rpcUrl) {
   return buildReading({ token, pools, now: /* @__PURE__ */ new Date(), block: String(block) });
 }
 
+// ../core/src/datasource.ts
+var DEFAULT_REPO = "ace-coderr/assay";
+var DEFAULT_BRANCH = "data";
+var RAW_HOST = "https://raw.githubusercontent.com";
+var DataSource = class {
+  repo;
+  branch;
+  fetchFn;
+  ttlMs;
+  fixedRoot;
+  now;
+  cached = null;
+  constructor(o = {}) {
+    this.repo = o.repo ?? DEFAULT_REPO;
+    this.branch = o.branch ?? DEFAULT_BRANCH;
+    this.fetchFn = o.fetchFn ?? ((...a) => fetch(...a));
+    this.ttlMs = o.ttlMs ?? 5 * 6e4;
+    this.fixedRoot = o.fixedRoot?.replace(/\/$/, "");
+    this.now = o.now ?? Date.now;
+  }
+  /** The branch URL: always valid, but may be an older copy on some network paths. */
+  get branchRoot() {
+    return this.fixedRoot ?? `${RAW_HOST}/${this.repo}/${this.branch}`;
+  }
+  /** Root URL to read files from: the immutable SHA URL when it can be resolved, else the branch URL. */
+  async root() {
+    if (this.fixedRoot) return this.fixedRoot;
+    if (this.cached && this.now() - this.cached.at < this.ttlMs) return `${RAW_HOST}/${this.repo}/${this.cached.sha}`;
+    try {
+      const res = await this.fetchFn(`https://api.github.com/repos/${this.repo}/git/ref/heads/${this.branch}`, {
+        headers: { accept: "application/vnd.github+json" },
+        signal: AbortSignal.timeout(8e3)
+      });
+      if (res.ok) {
+        const sha = (await res.json()).object?.sha;
+        if (sha && /^[0-9a-f]{40}$/.test(sha)) {
+          this.cached = { sha, at: this.now() };
+          return `${RAW_HOST}/${this.repo}/${sha}`;
+        }
+      }
+    } catch {
+    }
+    return this.branchRoot;
+  }
+  invalidate() {
+    this.cached = null;
+  }
+  /** Full URL of a published file. */
+  async url(file) {
+    return `${await this.root()}/${file}`;
+  }
+  /**
+   * Fetch a published file. If a SHA-pinned read fails (for example the commit was replaced by a newer force-push),
+   * drop the cached commit and retry once against the freshly resolved commit, then the branch URL.
+   */
+  async fetch(file, init) {
+    const first = await this.url(file);
+    try {
+      const res = await this.fetchFn(first, init);
+      if (res.ok || this.fixedRoot) return res;
+    } catch (e) {
+      if (this.fixedRoot) throw e;
+    }
+    this.invalidate();
+    const second = await this.url(file);
+    if (second !== first) {
+      try {
+        const res = await this.fetchFn(second, init);
+        if (res.ok) return res;
+      } catch {
+      }
+    }
+    return this.fetchFn(`${this.branchRoot}/${file}`, init);
+  }
+};
+
 // src/backend.ts
-var DEFAULT_DATA_URL = "https://raw.githubusercontent.com/ace-coderr/assay/data";
 function publishedBackend(opts = {}) {
-  const dataUrl = (opts.dataUrl ?? process.env.ASSAY_DATA_URL ?? DEFAULT_DATA_URL).replace(/\/$/, "");
   const fetchFn = opts.fetchFn ?? fetch;
+  const explicit = opts.dataUrl ?? process.env.ASSAY_DATA_URL;
+  const source = new DataSource({ fetchFn, fixedRoot: explicit });
   const liveRead = opts.live ?? ((r) => liveReading(r));
   const now = opts.now ?? Date.now;
   async function getJson(file) {
     try {
-      const res = await fetchFn(`${dataUrl}/${file}`, { signal: AbortSignal.timeout(15e3) });
+      const res = await source.fetch(file, { signal: AbortSignal.timeout(15e3) });
       if (!res.ok) return { ok: false, error: `${file}: HTTP ${res.status}` };
       return { ok: true, data: await res.json() };
     } catch (e) {
@@ -42263,19 +42339,19 @@ function publishedBackend(opts = {}) {
     if (!b.ok) return { error: b.error };
     const published = findReading(b.data, symbol2);
     let reading = published;
-    let source = "published";
+    let source2 = "published";
     let liveError;
     let readingAge = ageSec(published?.readAt, now());
     if (wantLive && published?.status === "ok") {
       try {
         reading = await liveRead(published);
-        source = "live";
+        source2 = "live";
         readingAge = 0;
       } catch (e) {
         liveError = `live on-chain read failed (${e instanceof Error ? e.message : "error"}); using the published reading`;
       }
     }
-    return { reading, source, liveError, readingAge, board: b.data };
+    return { reading, source: source2, liveError, readingAge, board: b.data };
   }
   return {
     async board() {
