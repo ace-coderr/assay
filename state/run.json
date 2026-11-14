@@ -1,0 +1,1 @@
+{"key":"run","value":{"at":"2026-11-14T14:29:56.066Z","durationMs":2177,"ok":true,"steps":{"tokensApi":279,"discoverPools":200,"readPools":902,"history":8,"actionsScan+save":787,"actionDetails":0},"consecutiveFailures":0}}
